@@ -1,26 +1,28 @@
-// script.js 내용 전체 교체
 const sheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQd7MAwHPNY8jyOF2Fi5qFgtwnDHjjA1IzkEbN91axz8qNHIDum5T2X-zH8yZ2kqdZQC4Lj1jMYD00R/pub?gid=1156416394&single=true&output=csv";
 
 let storyData = {};
 
 async function loadStory() {
-    const response = await fetch(sheetUrl);
-    const data = await response.text();
-    const lines = data.split("\n").filter(l => l.trim() !== ""); // 빈 줄 제거
+    try {
+        const response = await fetch(sheetUrl);
+        const data = await response.text();
+        const lines = data.split("\n").filter(l => l.trim() !== ""); 
 
-    for (let i = 1; i < lines.length; i++) {
-        const cols = lines[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(c => c.trim().replace(/"/g, ""));
-        if(cols[0]) {
-            storyData[cols[0]] = {
-                text: cols[1],
-                opt1: cols[2],
-                next1: cols[3],
-                chanceNext: cols[6], // 99
-                chanceRate: parseFloat(cols[7]) || 0 // 30
-            };
+        for (let i = 1; i < lines.length; i++) {
+            const cols = lines[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(c => c.trim().replace(/"/g, ""));
+            if(cols[0]) {
+                storyData[cols[0]] = {
+                    text: cols[1],
+                    opt1: cols[2],
+                    next1: cols[3],
+                    // G열(6)은 돌발 이벤트 ID, H열(7)은 확률 숫자
+                    chanceNext: cols[6], 
+                    chanceRate: parseFloat(cols[7]) || 0 
+                };
+            }
         }
-    }
-    showScene("1");
+        showScene("1");
+    } catch (e) { console.error("데이터 로딩 실패:", e); }
 }
 
 function showScene(sceneId) {
@@ -36,10 +38,11 @@ function showScene(sceneId) {
         btn.innerText = scene.opt1;
         btn.className = 'option-btn';
         btn.onclick = () => {
-            // 테스트를 위해 확률을 100%로 강제 고정해봅니다.
-            // 만약 여기서 99번으로 간다면, 로직은 성공이고 그동안 캐시 문제였던 것입니다.
-            if (scene.chanceNext) {
-                console.log("확률 이벤트로 이동 시도:", scene.chanceNext);
+            // 0~100 사이의 주사위를 굴립니다.
+            const dice = Math.random() * 100;
+            
+            // 주사위 값이 시트에 적힌 확률(예: 30)보다 작으면 늑대 출현!
+            if (scene.chanceNext && dice < scene.chanceRate) {
                 showScene(scene.chanceNext);
             } else {
                 showScene(scene.next1);
@@ -48,4 +51,5 @@ function showScene(sceneId) {
         optionsElement.appendChild(btn);
     }
 }
+
 loadStory();
