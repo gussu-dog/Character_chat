@@ -5,8 +5,8 @@ const baseSheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQd7MAwHPN
 // 탭 이름과 GID 매핑 (시트 하단 탭을 눌렀을 때 주소창 끝에 나오는 gid 번호)
 const characterConfigs = {
     "로라": "1156416394", 
-    "캐릭터이름2": "여기에_두번째탭_GID_입력",
-    "캐릭터이름3": "여기에_세번째탭_GID_입력"
+    "캐릭터이름2": "247421618",
+    "캐릭터이름3": "97907572"
 };
 
 let storyData = {};
@@ -95,3 +95,4 @@ async function loadStory(fullUrl) {
 }
 
 //
+
