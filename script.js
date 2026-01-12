@@ -12,36 +12,42 @@ const characterConfigs = {
 let storyData = {};
 let historyData = [];
 
-// 2. 캐릭터 목록 가져오기 (게임 시작 시 실행)
+// 캐릭터 목록 로드 (GID까지 자동으로 매칭)
 async function loadCharacterList() {
     try {
         const response = await fetch(appsScriptUrl);
-        const names = await response.json();
+        const characters = await response.json(); // [{name: "가나다", gid: "0"}, ...]
         
         const listDiv = document.getElementById('character-list');
-        listDiv.innerHTML = ''; // 기존 목록 비우기
+        listDiv.innerHTML = '';
 
-        names.forEach(name => {
+        characters.forEach(char => {
             const item = document.createElement('div');
-            item.className = 'character-item'; // CSS에서 스타일을 지정해주세요
-            item.innerText = name;
-            item.onclick = () => startChat(name);
+            item.className = 'character-item';
+            item.innerText = char.name;
+            
+            // 클릭 시 해당 캐릭터의 GID를 바로 전달
+            item.onclick = () => startChat(char.name, char.gid);
             listDiv.appendChild(item);
         });
     } catch (e) {
-        console.error("목록 로드 실패:", e);
-        // 만약 Apps Script가 안될 경우를 대비해 수동 목록이라도 띄우기
-        renderManualList();
+        console.error("캐릭터 목록 로드 중 오류:", e);
     }
 }
 
-// 3. 대화 시작 함수
-function startChat(name) {
-    const gid = characterConfigs[name];
-    if (!gid) {
-        alert("해당 캐릭터의 시트 ID(GID) 설정이 없습니다.");
-        return;
-    }
+// 대화 시작 (이제 gid를 인자로 직접 받음)
+function startChat(name, gid) {
+    document.getElementById('header-name').innerText = name;
+    document.getElementById('list-page').style.display = 'none';
+    document.getElementById('game-page').style.display = 'block';
+    
+    storyData = {};
+    historyData = [];
+    document.getElementById('chat-window').innerHTML = '';
+    
+    // 자동 매칭된 gid를 포함한 전체 URL 생성
+    loadStory(`${baseSheetUrl}${gid}`);
+}
 
     // 화면 전환
     document.getElementById('header-name').innerText = name;
@@ -95,5 +101,6 @@ async function loadStory(fullUrl) {
 }
 
 //
+
 
 
