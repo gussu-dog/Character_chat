@@ -75,29 +75,31 @@ body {
     box-shadow: 1px 1px 3px rgba(0,0,0,0.1);
 }
 
-/* 오른쪽 컨트롤 영역 */
+/* 오른쪽 컨트롤 영역을 더 깔끔하게 */
 .controls {
     width: 280px;
-    background-color: #2b2b2b;
-    padding: 25px;
-    border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    background-color: transparent; /* 배경 투명하게 */
+    padding: 0; /* 여백 제거 */
+    box-shadow: none; /* 그림자 제거 */
 }
 
 .option-btn {
     width: 100%;
     padding: 15px;
     margin-top: 10px;
-    background-color: #444;
-    color: white;
-    border: 1px solid #555;
-    border-radius: 12px;
+    background-color: #fee500; /* 선택지 버튼도 내 말풍선 색상과 맞추면 통일감이 생깁니다 */
+    color: #333;
+    border: none;
+    border-radius: 20px; /* 더 둥글게 만들어 말풍선 느낌 강조 */
+    font-weight: bold;
     cursor: pointer;
-    text-align: left;
+    text-align: center;
     transition: all 0.2s;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
 }
 
 .option-btn:hover {
-    background-color: #555;
-    transform: translateY(-2px);
+    background-color: #fada00;
+    transform: scale(1.03); /* 살짝 커지는 효과 */
+}
 }
