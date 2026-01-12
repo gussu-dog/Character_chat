@@ -60,6 +60,19 @@ function addMessage(text, sender) {
     chatWindow.scrollTop = chatWindow.scrollHeight;
 }
 
+// 타이핑 애니메이션 생성 함수
+function showTypingIndicator() {
+    const chatWindow = document.getElementById('chat-window');
+    const typingDiv = document.createElement('div');
+    typingDiv.id = 'typing-indicator';
+    typingDiv.className = 'typing-bubble';
+    typingDiv.innerHTML = '<div class="dot"></div><div class="dot"></div><div class="dot"></div>';
+    
+    chatWindow.appendChild(typingDiv);
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+    return typingDiv;
+}
+
 function showOptions(sceneId) {
     const scene = storyData[sceneId];
     const optionsElement = document.getElementById('options');
@@ -70,27 +83,33 @@ function showOptions(sceneId) {
         button.innerText = opt.label;
         button.className = 'option-btn';
         button.onclick = () => {
-            // 1. 내가 누른 버튼의 글자를 내 메시지로 추가
+            // 1. 내 메시지 전송
             addMessage(opt.label, 'me');
-            
-            // 2. 버튼들 비우기 (중복 클릭 방지)
             optionsElement.innerHTML = '';
 
-            // 3. 약간의 시간차(0.5초)를 두고 상대방 답장 출력
+            // 2. 잠시 후 타이핑 표시 시작
             setTimeout(() => {
-                const dice = Math.random() * 100;
-                if (scene.triggerOpt === opt.index && scene.chanceNext && dice < scene.chanceRate) {
-                    addMessage(storyData[scene.chanceNext].text, 'bot');
-                    showOptions(scene.chanceNext);
-                } else {
-                    addMessage(storyData[opt.next].text, 'bot');
-                    showOptions(opt.next);
-                }
-            }, 600);
+                const typingIndicator = showTypingIndicator();
+
+                // 3. 타이핑 중인 척(1.5초) 하다가 진짜 메시지 출력
+                setTimeout(() => {
+                    typingIndicator.remove(); // 타이핑 표시 삭제
+                    
+                    const dice = Math.random() * 100;
+                    if (scene.triggerOpt === opt.index && scene.chanceNext && dice < scene.chanceRate) {
+                        addMessage(storyData[scene.chanceNext].text, 'bot');
+                        showOptions(scene.chanceNext);
+                    } else {
+                        addMessage(storyData[opt.next].text, 'bot');
+                        showOptions(opt.next);
+                    }
+                }, 1500); // 1.5초 동안 '...' 표시
+            }, 400); // 내 메시지 전송 후 0.4초 뒤에 타이핑 시작
         };
         optionsElement.appendChild(button);
     });
 }
 
 loadStory();
+
 
