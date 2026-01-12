@@ -229,8 +229,23 @@ function resetChat(name) {
     }
 }
 
+// 모든 세이브 데이터 삭제 함수
+function clearAllSaves() {
+    if (confirm("정말로 모든 캐릭터와의 대화 기록을 삭제할까요? 이 작업은 되돌릴 수 없습니다.")) {
+        // 'game_save_'로 시작하는 모든 로컬스토리지 항목 삭제
+        Object.keys(localStorage).forEach(key => {
+            if (key.startsWith('game_save_')) {
+                localStorage.removeItem(key);
+            }
+        });
+        alert("모든 기록이 초기화되었습니다.");
+        location.reload(); // 페이지 새로고침하여 반영
+    }
+}
+
 // 시작
 window.onload = loadCharacterList;
+
 
 
 
