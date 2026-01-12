@@ -2,77 +2,26 @@ const sheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQd7MAwHPNY8jy
 
 let storyData = {};
 
-// 1. 현재 시간 텍스트 생성 (오전/오후 0:00)
-function getCurrentTimeText() {
-    const now = new Date();
-    let hours = now.getHours();
-    const minutes = now.getMinutes().toString().padStart(2, '0');
-    const ampm = hours >= 12 ? '오후' : '오전';
-    hours = hours % 12 || 12;
-    return `${ampm} ${hours}:${minutes}`;
-}
-
-// 2. 중앙 시간 구분선 (게임 시작 시 1회)
-function addTimeDivider() {
-    const chatWindow = document.getElementById('chat-window');
-    const timeDiv = document.createElement('div');
-    timeDiv.className = 'chat-time-divider';
-    timeDiv.innerText = `오늘 ${getCurrentTimeText()}`;
-    chatWindow.appendChild(timeDiv);
-}
-
-// 3. 메시지 추가 (말풍선 옆에 시간 붙이기)
 function addMessage(text, sender) {
     const chatWindow = document.getElementById('chat-window');
-    
-    // 래퍼 생성 (메시지 + 시간 한 줄)
-    const wrapper = document.createElement('div');
-    wrapper.className = `message-wrapper ${sender === 'me' ? 'me-wrapper' : 'bot-wrapper'}`;
-
-    // 말풍선 생성
     const msgDiv = document.createElement('div');
     msgDiv.className = sender === 'me' ? 'my-message' : 'message-bubble';
     msgDiv.innerText = text;
-
-    // 시간 태그 생성
-    const timeSpan = document.createElement('span');
-    timeSpan.className = 'msg-time';
-    timeSpan.innerText = getCurrentTimeText().split(' ')[1]; // "2:41" 형식만 추출
-
-    // 배치 순서 (카톡 스타일)
-    if (sender === 'me') {
-        wrapper.appendChild(timeSpan); // 나는 시간 - 말풍선 순서
-        wrapper.appendChild(msgDiv);
-    } else {
-        wrapper.appendChild(msgDiv); // 상대방은 말풍선 - 시간 순서
-        wrapper.appendChild(timeSpan);
-    }
-
-    chatWindow.appendChild(wrapper);
+    chatWindow.appendChild(msgDiv);
     chatWindow.scrollTop = chatWindow.scrollHeight;
 }
 
-// 4. 타이핑 표시
-function showTypingIndicator() {
+function showTyping() {
     const chatWindow = document.getElementById('chat-window');
-    const wrapper = document.createElement('div');
-    wrapper.className = 'message-wrapper bot-wrapper';
-    wrapper.id = 'typing-indicator-wrapper';
-
     const typingDiv = document.createElement('div');
+    typingDiv.id = 'typing';
     typingDiv.className = 'message-bubble';
-    typingDiv.style.display = 'inline-flex';
-    typingDiv.style.gap = '4px';
-    typingDiv.style.alignItems = 'center';
     typingDiv.innerHTML = '<div class="dot"></div><div class="dot"></div><div class="dot"></div>';
-    
-    wrapper.appendChild(typingDiv);
-    chatWindow.appendChild(wrapper);
+    chatWindow.appendChild(typingDiv);
     chatWindow.scrollTop = chatWindow.scrollHeight;
-    return wrapper;
+    return typingDiv;
 }
 
-// 5. 선택지 표시 및 로직
 function showOptions(sceneId) {
     const scene = storyData[sceneId];
     const optionsElement = document.getElementById('options');
@@ -86,15 +35,40 @@ function showOptions(sceneId) {
         button.onclick = () => {
             addMessage(opt.label, 'me');
             optionsElement.innerHTML = '';
-
+            
             setTimeout(() => {
-                const typingIndicator = showTypingIndicator();
+                const typing = showTyping();
                 setTimeout(() => {
-                    typingIndicator.remove();
+                    typing.remove();
                     const dice = Math.random() * 100;
-                    const nextSceneId = (scene.triggerOpt === opt.index && scene.chanceNext && dice < scene.chanceRate) 
-                                        ? scene.chanceNext : opt.next;
-                    
-                    if (storyData[nextSceneId]) {
-                        addMessage(storyData[nextSceneId].text, 'bot');
-                        show
+                    const nextId = (scene.triggerOpt === opt.index && scene.chanceNext && dice < scene.chanceRate) ? scene.chanceNext : opt.next;
+                    if (storyData[nextId]) {
+                        addMessage(storyData[nextId].text, 'bot');
+                        showOptions(nextId);
+                    }
+                }, 1000);
+            }, 300);
+        };
+        optionsElement.appendChild(button);
+    });
+}
+
+async function loadStory() {
+    try {
+        const response = await fetch(sheetUrl);
+        const data = await response.text();
+        const lines = data.split("\n").filter(l => l.trim() !== "");
+        lines.slice(1).forEach(line => {
+            const cols = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(c => c.trim().replace(/"/g, ""));
+            if(cols[0]) {
+                const id = cols[0];
+                const scene = { text: cols[1], options: [], triggerOpt: cols[12], chanceNext: cols[13], chanceRate: parseFloat(cols[14]) || 0 };
+                for (let i = 2; i <= 10; i += 2) { if (cols[i]) scene.options.push({ index: (i / 2).toString(), label: cols[i], next: cols[i+1] }); }
+                storyData[id] = scene;
+            }
+        });
+        if (storyData["1"]) { addMessage(storyData["1"].text, 'bot'); showOptions("1"); }
+    } catch (e) { console.error("Error:", e); }
+}
+
+loadStory();
