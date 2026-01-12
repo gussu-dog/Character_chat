@@ -1,12 +1,10 @@
 /* 기본 배경 설정 */
 body {
     background-color: #1a1a1a;
-    color: #fff;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
+    height: 100vh;
     margin: 0;
 }
 
@@ -19,7 +17,7 @@ body {
     padding: 20px;
 }
 
-/* 아이폰 프레임 */
+/* 휴대폰 프레임 */
 .phone-frame {
     width: 320px;
     height: 600px;
@@ -28,8 +26,8 @@ body {
     border-radius: 45px;
     display: flex;
     flex-direction: column;
+    position: relative; /* 중요: 하단 선택지의 기준점 */
     overflow: hidden;
-    position: relative;
     box-shadow: 0 20px 50px rgba(0,0,0,0.5);
 }
 
@@ -47,25 +45,61 @@ body {
 .back-btn { color: #7CABF9; font-size: 20px; cursor: pointer; }
 .contact-name { color: #000; font-weight: 600; font-size: 15px; }
 
-/* 채팅 창 */
+/* 채팅 창 영역 */
 .chat-window {
     flex: 1;
     padding: 15px;
+    padding-bottom: 120px; /* 선택지가 가리지 않도록 아래 여백 추가 */
     overflow-y: auto;
     display: flex;
     flex-direction: column;
     gap: 8px;
-    background-color: #fff;
 }
 
-/* 말풍선 공통 */
-.message-bubble, .my-message {
-    padding: 10px 14px;
-    border-radius: 18px;
-    max-width: 75%;
+/* 하단 선택지 컨테이너 */
+#options {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.9); /* 살짝 투명한 배경 */
+    backdrop-filter: blur(10px);
+    padding: 15px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    border-top: 1px solid #eee;
+}
+
+/* 말풍선 모양의 선택지 버튼 */
+.option-btn {
+    width: 100%;
+    padding: 12px 16px;
+    background-color: #7CABF9;
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+    border-bottom-left-radius: 4px; /* 말풍선 꼬리 느낌 */
     font-size: 14px;
-    line-height: 1.4;
-    word-break: break-all;
+    font-weight: 500;
+    cursor: pointer;
+    text-align: left; /* 왼쪽 정렬 */
+    transition: all 0.2s;
+}
+
+.option-btn:hover {
+    background-color: #6da0ed;
+    transform: scale(1.02);
+}
+
+/* 말풍선 디자인 (기존 유지) */
+.message-bubble {
+    background-color: #e9e9eb;
+    align-self: flex-start;
+    border-radius: 18px;
+    border-bottom-left-radius: 4px;
+    padding: 8px 14px;
+    font-size: 14px;
 }
 
 /* 상대방 (연한 회색) */
@@ -76,12 +110,14 @@ body {
     border-bottom-left-radius: 4px;
 }
 
-/* 나 (연한 파랑 #7CABF9) */
 .my-message {
     background-color: #7CABF9;
     color: #fff;
     align-self: flex-end;
+    border-radius: 18px;
     border-bottom-right-radius: 4px;
+    padding: 8px 14px;
+    font-size: 14px;
 }
 
 /* 타이핑 애니메이션 점 */
