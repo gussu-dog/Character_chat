@@ -9,19 +9,29 @@
 <body>
     <div class="main-container">
         <div class="phone-frame">
-            <div class="chat-header">
-                <span class="back-btn">〈</span>
-                <div class="contact-name">로라💕</div>
-                <span style="visibility: hidden;">〈</span>
+            <div id="list-page">
+                <div class="chat-header">
+                    <div class="contact-name">대화 상대 선택</div>
+                </div>
+                <div id="character-list" class="list-container">
+                    </div>
             </div>
-            
-            <div id="chat-window" class="chat-window"></div>
-            <div id="options" class="options-container"></div>
+
+            <div id="game-page" style="display: none;">
+                <div class="chat-header">
+                    <span id="back-btn" class="back-btn">〈</span>
+                    <div id="header-name" class="contact-name">캐릭터 이름</div>
+                    <span style="visibility: hidden;">〈</span>
+                </div>
+                <div id="chat-window" class="chat-window"></div>
+                <div id="options" class="options-container"></div>
+            </div>
         </div>
     </div>
     <script src="script.js"></script>
 </body>
 </html>
+
 
 
 
