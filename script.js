@@ -3,6 +3,24 @@ const sheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQd7MAwHPNY8jy
 let storyData = {};
 let historyData = [];
 
+// 확률 가챠를 계산하는 새로운 함수
+function getGachaResult(chanceString) {
+    // 예: "101:20, 102:30, 103:50" -> ["101:20", "102:30", "103:50"]
+    const pools = chanceString.split(',').map(p => p.trim());
+    const dice = Math.random() * 100;
+    let cumulativeProbability = 0;
+
+    for (let pool of pools) {
+        const [nextId, probability] = pool.split(':');
+        cumulativeProbability += parseFloat(probability);
+        
+        if (dice <= cumulativeProbability) {
+            return nextId; // 당첨된 ID 반환
+        }
+    }
+    return null; // 확률 합이 100이 아니거나 오류 시
+}
+
 function addMessage(text, sender) {
     const chatWindow = document.getElementById('chat-window');
     const msgDiv = document.createElement('div');
@@ -59,14 +77,28 @@ function showOptions(sceneId) {
         button.innerText = opt.label;
         button.className = 'option-btn';
         button.onclick = () => {
-            addMessage(opt.label, 'me');
-            optionsElement.innerHTML = '';
+    addMessage(opt.label, 'me');
+    optionsElement.innerHTML = '';
             
             setTimeout(() => {
-                const dice = Math.random() * 100;
-                const nextId = (scene.triggerOpt === opt.index && scene.chanceNext && dice < scene.chanceRate) ? scene.chanceNext : opt.next;
-                playScene(nextId);
-            }, 500);
+        const typing = showTyping();
+        setTimeout(() => {
+            if(typing.parentNode) typing.parentNode.removeChild(typing);
+            
+            let nextId;
+            // 만약 현재 선택지가 확률 이벤트를 트리거한다면 (triggerOpt와 일치)
+            if (scene.triggerOpt === opt.index && scene.chanceNext) {
+                // 가챠 로직 실행
+                const gachaId = getGachaResult(scene.chanceNext);
+                nextId = gachaId ? gachaId : opt.next;
+            } else {
+                nextId = opt.next;
+            }
+
+            if (storyData[nextId]) playScene(nextId);
+        }, 1000);
+    }, 500);
+};
         };
         optionsElement.appendChild(button);
     });
@@ -120,4 +152,6 @@ async function loadStory() {
     } catch (e) { console.error("Error:", e); }
 }
 
+
 loadStory();
+
