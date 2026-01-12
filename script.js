@@ -3,8 +3,9 @@ const appsScriptUrl = "https://script.google.com/macros/s/AKfycbzP0LhD-PiPMDsu4e
 const baseSheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQd7MAwHPNY8jyOF2Fi5qFgtwnDHjjA1IzkEbN91axz8qNHIDum5T2X-zH8yZ2kqdZQC4Lj1jMYD00R/pub?output=csv&gid=";
 
 let storyData = {};
-let historyData = []; // 과거 기록(-ID) 저장용
+let historyData = [];
 let currentCharName = "";
+let currentGid = ""; // resetChat 기능을 위해 추가
 
 // 세이브 키 생성
 function getSaveKey(charName) {
@@ -14,13 +15,14 @@ function getSaveKey(charName) {
 // 3. 메시지 추가 및 저장
 function addMessage(text, sender, isLoadingSave = false) {
     const chatWindow = document.getElementById('chat-window');
+    if (!chatWindow) return;
+
     const msgDiv = document.createElement('div');
     msgDiv.className = sender === 'me' ? 'my-message' : 'message-bubble';
     msgDiv.innerHTML = text.replace(/\\n/g, '<br>');
     chatWindow.appendChild(msgDiv);
     chatWindow.scrollTop = chatWindow.scrollHeight;
 
-    // 세이브 로드 중이 아닐 때만 로컬 저장소에 추가
     if (!isLoadingSave && currentCharName) {
         let saveData = JSON.parse(localStorage.getItem(getSaveKey(currentCharName))) || { messages: [], lastSceneId: "1" };
         saveData.messages.push({ text, sender });
@@ -28,41 +30,42 @@ function addMessage(text, sender, isLoadingSave = false) {
     }
 }
 
-// 5. 대화 시작 (데이터 로드 + 과거 기록 + 세이브 복구)
+// 5. 대화 시작
 function startChat(name, gid) {
     currentCharName = name;
-    document.getElementById('header-name').innerText = name;
-    document.getElementById('list-page').style.display = 'none';
-    document.getElementById('game-page').style.display = 'block';
+    currentGid = gid; // 초기화 기능을 위해 저장
+    
+    const headerName = document.getElementById('header-name');
+    const listPage = document.getElementById('list-page');
+    const gamePage = document.getElementById('game-page');
+    
+    if(headerName) headerName.innerText = name;
+    if(listPage) listPage.style.display = 'none';
+    if(gamePage) gamePage.style.display = 'block';
     
     document.getElementById('chat-window').innerHTML = '';
     document.getElementById('options').innerHTML = '';
     
     loadStory(`${baseSheetUrl}${gid}`).then(() => {
         const saved = localStorage.getItem(getSaveKey(name));
-        
-        // 1. 시트의 -ID 과거 기록 먼저 출력
         historyData.forEach(h => addMessage(h.text, h.sender, true));
 
         if (saved) {
             const parsed = JSON.parse(saved);
-            // 2. 세이브된 진행 내역 출력 (addMessage에 true 전달하여 중복 저장 방지)
             parsed.messages.forEach(m => addMessage(m.text, m.sender, true));
-            
-            // 3. [수정] 마지막 대화 중복 방지: 
-            // 마지막 대화가 이미 화면에 그려졌으므로, playScene 대신 옵션만 표시합니다.
             showOptions(parsed.lastSceneId);
         } else {
-            // 4. 처음 시작인 경우에만 1번 실행
             if (storyData["1"]) playScene("1");
         }
+    }).catch(err => {
+        console.error("스토리 로드 중 에러 발생:", err);
     });
 }
 
-// 6. 시트 데이터 로드 (과거 기록 복구 로직 포함)
+// 6. 시트 데이터 로드
 async function loadStory(fullUrl) {
     storyData = {}; 
-    historyData = []; // 초기화
+    historyData = [];
     try {
         const response = await fetch(fullUrl);
         const data = await response.text();
@@ -73,21 +76,9 @@ async function loadStory(fullUrl) {
             const id = parseInt(cols[0]);
             if (!isNaN(id)) {
                 if (id < 0) {
-                    // 과거 기록(-ID) 처리
-                    historyData.push({ 
-                        id: id, 
-                        text: cols[1], 
-                        sender: cols[2] === 'me' ? 'me' : 'bot' 
-                    });
+                    historyData.push({ id: id, text: cols[1], sender: cols[2] === 'me' ? 'me' : 'bot' });
                 } else {
-                    // 일반 시나리오 처리
-                    const scene = { 
-                        text: cols[1], 
-                        options: [], 
-                        autoNext: cols[3],
-                        triggerOpt: cols[12], 
-                        chanceNext: cols[13]
-                    };
+                    const scene = { text: cols[1], options: [], autoNext: cols[3], triggerOpt: cols[12], chanceNext: cols[13] };
                     for (let i = 4; i <= 9; i += 2) { 
                         if (cols[i]) {
                             scene.options.push({ index: ((i-4) / 2 + 1).toString(), label: cols[i], next: cols[i+1] }); 
@@ -97,19 +88,22 @@ async function loadStory(fullUrl) {
                 }
             }
         });
-        // -ID 순서대로 정렬 (예: -10, -9, -8...)
         historyData.sort((a, b) => a.id - b.id);
-    } catch (e) { console.error("데이터 로드 실패:", e); }
+    } catch (e) { 
+        console.error("데이터 로드 실패:", e);
+        alert("데이터를 가져오는 데 실패했습니다.");
+    }
 }
 
 // 2. 캐릭터 목록 로드
 async function loadCharacterList() {
     const spinner = document.getElementById('loading-spinner');
     const listDiv = document.getElementById('character-list');
+    const listPage = document.getElementById('list-page');
 
     try {
-        console.log("목록 불러오는 중...");
         const response = await fetch(appsScriptUrl);
+        if (!response.ok) throw new Error('네트워크 응답이 좋지 않습니다.');
         const characters = await response.json();
         
         listDiv.innerHTML = '';
@@ -117,27 +111,20 @@ async function loadCharacterList() {
             const item = document.createElement('div');
             item.className = 'character-item';
             const imgHtml = char.photo ? `<img src="${char.photo}" class="profile-img">` : `<div class="profile-placeholder"></div>`;
-            
-            item.innerHTML = `
-                <div class="profile-group">
-                    ${imgHtml}
-                    <span>${char.name}</span>
-                </div>
-                <span class="arrow">〉</span>
-            `;
+            item.innerHTML = `<div class="profile-group">${imgHtml}<span>${char.name}</span></div><span class="arrow">〉</span>`;
             item.onclick = () => startChat(char.name, char.gid);
             listDiv.appendChild(item);
         });
 
-        spinner.style.display = 'none';
-        listDiv.style.display = 'block';
+        if(spinner) spinner.style.display = 'none';
+        if(listPage) listPage.style.display = 'block';
     } catch (e) {
-        spinner.innerHTML = "<p>목록 로드 실패. 앱스 스크립트 설정을 확인하세요.</p>";
+        if(spinner) spinner.innerHTML = "<p style='color:white;'>목록 로드 실패. 앱스 스크립트 설정을 확인하세요.</p>";
         console.error("캐릭터 목록 오류:", e);
     }
 }
 
-// 4. 장면 실행 및 세이브 포인트 저장
+// 4. 장면 실행
 async function playScene(sceneId) {
     const scene = storyData[sceneId];
     if (!scene) return;
@@ -156,7 +143,6 @@ async function playScene(sceneId) {
     }, 1000);
 }
 
-// 7. UI 및 옵션 로직
 function showTyping() {
     const chatWin = document.getElementById('chat-window');
     const typingDiv = document.createElement('div');
@@ -171,10 +157,11 @@ function showTyping() {
 function showOptions(sceneId) {
     const scene = storyData[sceneId];
     const optionsElement = document.getElementById('options');
+    if(!optionsElement) return;
     optionsElement.innerHTML = '';
     
     if (!scene || !scene.options || scene.options.length === 0) {
-        if (scene.autoNext) setTimeout(() => playScene(scene.autoNext), 800);
+        if (scene && scene.autoNext) setTimeout(() => playScene(scene.autoNext), 800);
         return;
     }
 
@@ -215,37 +202,29 @@ function getGachaResult(chanceString, defaultNext) {
 }
 
 // 8. 뒤로가기 버튼
-document.getElementById('back-btn').onclick = () => {
-    document.getElementById('game-page').style.display = 'none';
-    document.getElementById('list-page').style.display = 'block';
-    currentCharName = "";
-};
-
-// 캐릭터 대화 초기화 (선택 사항)
-function resetChat(name) {
-    if (confirm(`${name}님과의 대화 기록을 삭제하고 처음부터 시작할까요?`)) {
-        localStorage.removeItem(getSaveKey(name));
-        startChat(name, currentGid); // 새로 시작
-    }
+const backBtn = document.getElementById('back-btn');
+if(backBtn) {
+    backBtn.onclick = () => {
+        document.getElementById('game-page').style.display = 'none';
+        document.getElementById('list-page').style.display = 'block';
+        currentCharName = "";
+    };
 }
 
 // 모든 세이브 데이터 삭제 함수
 function clearAllSaves() {
-    if (confirm("정말로 모든 캐릭터와의 대화 기록을 삭제할까요? 이 작업은 되돌릴 수 없습니다.")) {
-        // 'game_save_'로 시작하는 모든 로컬스토리지 항목 삭제
+    if (confirm("정말로 모든 캐릭터와의 대화 기록을 삭제할까요?")) {
         Object.keys(localStorage).forEach(key => {
             if (key.startsWith('game_save_')) {
                 localStorage.removeItem(key);
             }
         });
         alert("모든 기록이 초기화되었습니다.");
-        location.reload(); // 페이지 새로고침하여 반영
+        location.reload();
     }
 }
 
-// 시작
-window.onload = loadCharacterList;
-
-
-
-
+// [수정] DOMContentLoaded를 사용하여 HTML이 다 읽힌 후 실행되도록 보장
+document.addEventListener('DOMContentLoaded', () => {
+    loadCharacterList();
+});
