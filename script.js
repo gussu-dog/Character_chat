@@ -27,10 +27,22 @@ async function loadStory() {
                 storyData[id] = scene;
             }
         });
-        // 첫 메시지 시작
-        addMessage(storyData["1"].text, 'bot');
-        showOptions("1");
-    } catch (e) { console.error(e); }
+
+        // --- 여기서부터가 수정된 부분입니다 ---
+        const chatWindow = document.getElementById('chat-window');
+        chatWindow.innerHTML = ''; // "메시지를 불러오는 중..." 문구를 삭제합니다.
+
+        // 첫 번째 장면(ID: 1)의 메시지를 띄웁니다.
+        if (storyData["1"]) {
+            addMessage(storyData["1"].text, 'bot');
+            showOptions("1");
+        }
+        // --------------------------------------
+
+    } catch (e) { 
+        console.error("데이터 로딩 실패:", e);
+        document.getElementById('chat-window').innerText = "데이터를 가져오지 못했습니다.";
+    }
 }
 
 // 메시지를 채팅창에 추가하는 함수
@@ -81,3 +93,4 @@ function showOptions(sceneId) {
 }
 
 loadStory();
+
