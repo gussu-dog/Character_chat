@@ -70,9 +70,14 @@ function showTypingIndicator() {
     const chatWindow = document.getElementById('chat-window');
     const typingDiv = document.createElement('div');
     typingDiv.id = 'typing-indicator';
-    typingDiv.className = 'message-bubble'; // 상대방 말풍선 디자인을 그대로 사용
-    typingDiv.style.display = 'flex';
+    typingDiv.className = 'message-bubble'; // 상대방 말풍선 스타일 활용
+    typingDiv.style.display = 'inline-flex';
     typingDiv.style.gap = '4px';
+    typingDiv.style.alignItems = 'center';
+    typingDiv.style.minWidth = '40px';
+    typingDiv.style.minHeight = '15px';
+    
+    // 점 3개 추가
     typingDiv.innerHTML = '<div class="dot"></div><div class="dot"></div><div class="dot"></div>';
     
     chatWindow.appendChild(typingDiv);
@@ -118,6 +123,7 @@ function showOptions(sceneId) {
 }
 
 loadStory();
+
 
 
 
