@@ -4,7 +4,7 @@ const baseSheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQd7MAwHPN
 
 let storyData = {};
 let historyData = [];
-let currentCharName = ""; // 현재 대화 중인 캐릭터 이름 저장용
+let currentCharName = ""; // 현재 대화 캐릭터 이름
 
 // 세이브 키 생성
 function getSaveKey(charName) {
@@ -17,6 +17,7 @@ async function loadCharacterList() {
     const listDiv = document.getElementById('character-list');
 
     try {
+        console.log("목록 불러오는 중...");
         const response = await fetch(appsScriptUrl);
         const characters = await response.json();
         
@@ -40,8 +41,8 @@ async function loadCharacterList() {
         spinner.style.display = 'none';
         listDiv.style.display = 'block';
     } catch (e) {
-        spinner.innerHTML = "<p>목록을 불러오지 못했습니다.</p>";
-        console.error(e);
+        spinner.innerHTML = "<p>목록 로드 실패. 앱스 스크립트 설정을 확인하세요.</p>";
+        console.error("캐릭터 목록 오류:", e);
     }
 }
 
@@ -54,7 +55,6 @@ function addMessage(text, sender, isLoadingSave = false) {
     chatWindow.appendChild(msgDiv);
     chatWindow.scrollTop = chatWindow.scrollHeight;
 
-    // 세이브 데이터를 불러오는 중이 아닐 때만 로컬스토리지에 저장
     if (!isLoadingSave && currentCharName) {
         let saveData = JSON.parse(localStorage.getItem(getSaveKey(currentCharName))) || { messages: [], lastSceneId: "1" };
         saveData.messages.push({ text, sender });
@@ -62,12 +62,11 @@ function addMessage(text, sender, isLoadingSave = false) {
     }
 }
 
-// 4. 장면 실행 및 마지막 장면 ID 저장
+// 4. 장면 실행 및 세이브 포인트 저장
 async function playScene(sceneId) {
     const scene = storyData[sceneId];
     if (!scene) return;
 
-    // 마지막 위치 저장
     if (currentCharName) {
         let saveData = JSON.parse(localStorage.getItem(getSaveKey(currentCharName))) || { messages: [], lastSceneId: "1" };
         saveData.lastSceneId = sceneId;
@@ -76,15 +75,15 @@ async function playScene(sceneId) {
 
     const typing = showTyping();
     setTimeout(() => {
-        if(typing.parentNode) typing.parentNode.removeChild(typing);
+        if(typing && typing.parentNode) typing.parentNode.removeChild(typing);
         addMessage(scene.text, 'bot');
         showOptions(sceneId);
     }, 1000);
 }
 
-// 5. 대화 시작 (세이브 로드 포함)
+// 5. 대화 시작 (데이터 로드 + 세이브 복구)
 function startChat(name, gid) {
-    currentCharName = name; // 현재 캐릭터 설정
+    currentCharName = name;
     document.getElementById('header-name').innerText = name;
     document.getElementById('list-page').style.display = 'none';
     document.getElementById('game-page').style.display = 'block';
@@ -96,7 +95,6 @@ function startChat(name, gid) {
         const saved = localStorage.getItem(getSaveKey(name));
         if (saved) {
             const parsed = JSON.parse(saved);
-            // 과거 메시지 복구 (addMessage의 3번째 인자를 true로 주어 중복 저장 방지)
             parsed.messages.forEach(m => addMessage(m.text, m.sender, true));
             playScene(parsed.lastSceneId);
         } else {
@@ -107,7 +105,7 @@ function startChat(name, gid) {
 
 // 6. 시트 데이터 로드
 async function loadStory(fullUrl) {
-    storyData = {}; // 데이터 초기화
+    storyData = {}; 
     try {
         const response = await fetch(fullUrl);
         const data = await response.text();
@@ -135,7 +133,7 @@ async function loadStory(fullUrl) {
     } catch (e) { console.error("데이터 로드 실패:", e); }
 }
 
-// 7. 기타 기능 (타이핑, 옵션, 가챠, 뒤로가기)
+// 7. UI 및 옵션 로직
 function showTyping() {
     const chatWin = document.getElementById('chat-window');
     const typingDiv = document.createElement('div');
@@ -167,7 +165,7 @@ function showOptions(sceneId) {
             setTimeout(() => {
                 const typing = showTyping();
                 setTimeout(() => {
-                    if(typing.parentNode) typing.parentNode.removeChild(typing);
+                    if(typing && typing.parentNode) typing.parentNode.removeChild(typing);
                     let nextId = opt.next;
                     if (scene.triggerOpt === opt.index && scene.chanceNext) {
                         nextId = getGachaResult(scene.chanceNext, opt.next);
@@ -188,4 +186,17 @@ function getGachaResult(chanceString, defaultNext) {
     for (let pool of pools) {
         const [id, prob] = pool.split(':');
         cumulativeProbability += parseFloat(prob);
-        if (dice <= cumulativeProbability)
+        if (dice <= cumulativeProbability) return id.trim();
+    }
+    return defaultNext;
+}
+
+// 8. 뒤로가기 버튼
+document.getElementById('back-btn').onclick = () => {
+    document.getElementById('game-page').style.display = 'none';
+    document.getElementById('list-page').style.display = 'block';
+    currentCharName = "";
+};
+
+// 시작
+window.onload = loadCharacterList;
