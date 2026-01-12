@@ -135,31 +135,3 @@ body {
     40% { opacity: 1; }
 }
 
-/* 답변 영역 (휴대폰 옆) */
-.controls {
-    width: 260px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-
-.option-btn {
-    width: 100%;
-    padding: 14px 18px;
-    margin-bottom: 12px;
-    background-color: #7CABF9;
-    color: #fff;
-    border: none;
-    border-radius: 20px;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s;
-    text-align: center;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-}
-
-.option-btn:hover {
-    background-color: #6da0ed;
-    transform: translateY(-2px);
-}
