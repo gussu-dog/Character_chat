@@ -1,16 +1,29 @@
-<div class="main-container">
-    <div class="phone-frame">
-        <div class="chat-header">의문의 상대</div>
-        <div id="chat-window" class="chat-window">
-            <div id="text" class="message-target">
-                메시지를 불러오는 중...
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>채팅 텍스트 게임</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="main-container">
+        <div class="phone-frame">
+            <div class="chat-header">의문의 상대</div>
+            <div id="chat-window" class="chat-window">
+                <div id="text" class="message-bubble">메시지를 불러오는 중...</div>
             </div>
+        </div>
+
+        <div class="controls">
+            <h3>나의 답변</h3>
+            <hr>
+            <div id="options" class="options-container">
+                </div>
         </div>
     </div>
 
-    <div class="controls">
-        <h3>나의 답변</h3>
-        <div id="options" class="options-container">
-            </div>
-    </div>
-</div>
+    <script src="script.js"></script>
+</body>
+</html>
