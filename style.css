@@ -62,36 +62,37 @@ body {
     position: absolute;
     bottom: 0;
     width: 100%;
-    padding: 20px 15px 30px; /* 아래쪽 여백을 줘서 더 안정적으로 배치 */
+    padding: 20px 15px 30px; 
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    align-items: flex-start; /* 버튼들을 왼쪽으로 정렬 */
+    align-items: flex-end; /* ★ 버튼들을 오른쪽으로 정렬 ★ */
     gap: 10px;
-    background: linear-gradient(to top, rgba(255,255,255,1) 80%, rgba(255,255,255,0)); /* 자연스러운 그라데이션 */
+    background: linear-gradient(to top, rgba(255,255,255,1) 80%, rgba(255,255,255,0));
+    z-index: 10;
 }
 
-/* ★ 말풍선 모양의 선택지 버튼 (수정 핵심) ★ */
+/* 말풍선 모양의 선택지 버튼 */
 .option-btn {
-    width: auto;            /* 100% 제거: 글자 길이에 맞게 */
-    max-width: 90%;         /* 너무 길어지지 않게 방지 */
+    width: auto;
+    max-width: 90%;
     padding: 10px 16px;
     background-color: #7CABF9;
     color: #fff;
     border: none;
     border-radius: 18px;
-    border-bottom-left-radius: 4px; /* 말풍선 꼬리 효과 */
+    border-bottom-right-radius: 4px; /* ★ 꼬리 방향을 오른쪽 하단으로 변경 ★ */
     font-size: 14px;
     font-weight: 500;
     cursor: pointer;
-    text-align: left;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    text-align: right; /* 글자 오른쪽 정렬 */
+    box-shadow: 0 2px 8px rgba(124, 171, 249, 0.3);
     transition: all 0.2s ease;
 }
 
 .option-btn:hover {
     background-color: #6da0ed;
-    transform: translateX(5px); /* 옆으로 살짝 밀리는 효과 */
+    transform: translateX(-5px); /* 왼쪽으로 살짝 밀리는 효과 (오른쪽 정렬이니까) */
 }
 
 /* 상대방 메시지 */
