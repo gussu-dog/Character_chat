@@ -10,39 +10,46 @@ async function loadStory() {
 
         lines.slice(1).forEach(line => {
             const cols = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(c => c.trim().replace(/"/g, ""));
-            
             if(cols[0]) {
                 const id = cols[0];
                 const scene = {
                     text: cols[1],
                     options: [],
-                    triggerOpt: cols[12], // M열: 확률이 발동할 선택지 번호 (1~5)
-                    chanceNext: cols[13], // N열: 돌발 이벤트 ID
-                    chanceRate: parseFloat(cols[14]) || 0 // O열: 확률
+                    triggerOpt: cols[12], 
+                    chanceNext: cols[13], 
+                    chanceRate: parseFloat(cols[14]) || 0 
                 };
-
-                // 선택지들을 배열에 담기
                 for (let i = 2; i <= 10; i += 2) {
-                    if (cols[i] && cols[i].length > 0) {
-                        scene.options.push({
-                            index: (i / 2).toString(), // 선택지 번호 (1, 2, 3...)
-                            label: cols[i],
-                            next: cols[i+1]
-                        });
+                    if (cols[i]) {
+                        scene.options.push({ index: (i / 2).toString(), label: cols[i], next: cols[i+1] });
                     }
                 }
                 storyData[id] = scene;
             }
         });
-        showScene("1");
-    } catch (e) { console.error("로딩 실패:", e); }
+        // 첫 메시지 시작
+        addMessage(storyData["1"].text, 'bot');
+        showOptions("1");
+    } catch (e) { console.error(e); }
 }
 
-function showScene(sceneId) {
-    const scene = storyData[sceneId];
-    if (!scene) return;
+// 메시지를 채팅창에 추가하는 함수
+function addMessage(text, sender) {
+    const chatWindow = document.getElementById('chat-window');
+    const msgDiv = document.createElement('div');
+    
+    // sender가 'me'면 노란색(오른쪽), 'bot'이면 회색(왼쪽)
+    msgDiv.className = sender === 'me' ? 'my-message' : 'message-bubble';
+    msgDiv.innerText = text;
+    
+    chatWindow.appendChild(msgDiv);
+    
+    // 새 메시지가 오면 자동으로 스크롤을 아래로 이동
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+}
 
-    document.getElementById('text').innerText = scene.text;
+function showOptions(sceneId) {
+    const scene = storyData[sceneId];
     const optionsElement = document.getElementById('options');
     optionsElement.innerHTML = '';
 
@@ -51,15 +58,23 @@ function showScene(sceneId) {
         button.innerText = opt.label;
         button.className = 'option-btn';
         button.onclick = () => {
-            const dice = Math.random() * 100;
+            // 1. 내가 누른 버튼의 글자를 내 메시지로 추가
+            addMessage(opt.label, 'me');
             
-            // 현재 누른 버튼의 번호가 시트의 triggerOpt와 일치할 때만 확률 계산
-            if (scene.triggerOpt === opt.index && scene.chanceNext && dice < scene.chanceRate) {
-                console.log(`${opt.index}번 선택지 확률 발동!`);
-                showScene(scene.chanceNext);
-            } else {
-                showScene(opt.next);
-            }
+            // 2. 버튼들 비우기 (중복 클릭 방지)
+            optionsElement.innerHTML = '';
+
+            // 3. 약간의 시간차(0.5초)를 두고 상대방 답장 출력
+            setTimeout(() => {
+                const dice = Math.random() * 100;
+                if (scene.triggerOpt === opt.index && scene.chanceNext && dice < scene.chanceRate) {
+                    addMessage(storyData[scene.chanceNext].text, 'bot');
+                    showOptions(scene.chanceNext);
+                } else {
+                    addMessage(storyData[opt.next].text, 'bot');
+                    showOptions(opt.next);
+                }
+            }, 600);
         };
         optionsElement.appendChild(button);
     });
