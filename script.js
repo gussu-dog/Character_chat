@@ -5,6 +5,11 @@ const baseSheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQd7MAwHPN
 let storyData = {};
 let historyData = [];
 
+// 캐릭터별 세이브 키 생성 함수
+function getSaveKey(charName) {
+    return `game_save_${charName}`;
+}
+
 async function loadCharacterList() {
     const spinner = document.getElementById('loading-spinner');
     const listDiv = document.getElementById('character-list');
@@ -46,18 +51,75 @@ async function loadCharacterList() {
     }
 }
 
-// 대화 시작
+// 1. 메시지 추가 시 저장 로직 추가
+function addMessage(text, sender, charName, isLoadingSave = false) {
+    const chatWindow = document.getElementById('chat-window');
+    const msgDiv = document.createElement('div');
+    msgDiv.className = sender === 'me' ? 'my-message' : 'message-bubble';
+    msgDiv.innerHTML = text.replace(/\\n/g, '<br>');
+    chatWindow.appendChild(msgDiv);
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+
+    // 세이브 데이터를 불러오는 중이 아닐 때만 저장
+    if (!isLoadingSave && charName) {
+        saveCurrentProgress(charName, text, sender);
+    }
+}
+
+// 2. 현재 진행 상황을 로컬 저장소에 저장
+function saveCurrentProgress(charName, text, sender) {
+    let saveData = JSON.parse(localStorage.getItem(getSaveKey(charName))) || { messages: [], lastSceneId: "1" };
+    saveData.messages.push({ text, sender });
+    localStorage.setItem(getSaveKey(charName), JSON.stringify(saveData));
+}
+
+// 3. 마지막 장면 ID 저장 함수 (장면 전환 시 호출)
+function saveLastScene(charName, sceneId) {
+    let saveData = JSON.parse(localStorage.getItem(getSaveKey(charName))) || { messages: [], lastSceneId: "1" };
+    saveData.lastSceneId = sceneId;
+    localStorage.setItem(getSaveKey(charName), JSON.stringify(saveData));
+}
+
+// 4. 대화 시작 시 세이브 데이터 확인 및 로드
 function startChat(name, gid) {
     document.getElementById('header-name').innerText = name;
     document.getElementById('list-page').style.display = 'none';
     document.getElementById('game-page').style.display = 'block';
     
-    storyData = {};
-    historyData = [];
+    // 화면 비우기
     document.getElementById('chat-window').innerHTML = '';
     document.getElementById('options').innerHTML = '';
     
-    loadStory(`${baseSheetUrl}${gid}`);
+    // 1. 시트 데이터를 먼저 불러온 뒤
+    loadStory(`${baseSheetUrl}${gid}`).then(() => {
+        // 2. 해당 캐릭터의 세이브 데이터 확인
+        const saved = localStorage.getItem(getSaveKey(name));
+        if (saved) {
+            const parsed = JSON.parse(saved);
+            // 과거 메시지 복구 (저장 안 함 옵션 true)
+            parsed.messages.forEach(m => addMessage(m.text, m.sender, name, true));
+            // 마지막 장면부터 이어서 시작
+            playScene(parsed.lastSceneId, name);
+        } else {
+            // 세이브 없으면 1번부터 시작
+            if (storyData["1"]) playScene("1", name);
+        }
+    });
+}
+
+// 5. playScene 수정 (현재 캐릭터 이름을 인자로 전달)
+async function playScene(sceneId, charName) {
+    const scene = storyData[sceneId];
+    if (!scene) return;
+
+    saveLastScene(charName, sceneId); // 현재 장면 ID 저장
+
+    const typing = showTyping();
+    setTimeout(() => {
+        if(typing.parentNode) typing.parentNode.removeChild(typing);
+        addMessage(scene.text, 'bot', charName);
+        showOptions(sceneId, charName);
+    }, 1000);
 }
 
 // 시트 데이터 로드
@@ -96,16 +158,6 @@ async function loadStory(fullUrl) {
         historyData.forEach(h => addMessage(h.text, h.sender));
         if (storyData["1"]) playScene("1");
     } catch (e) { console.error("데이터 로드 실패:", e); }
-}
-
-// 메시지 추가
-function addMessage(text, sender) {
-    const chatWindow = document.getElementById('chat-window');
-    const msgDiv = document.createElement('div');
-    msgDiv.className = sender === 'me' ? 'my-message' : 'message-bubble';
-    msgDiv.innerHTML = text.replace(/\\n/g, '<br>');
-    chatWindow.appendChild(msgDiv);
-    chatWindow.scrollTop = chatWindow.scrollHeight;
 }
 
 // 타이핑 중...
@@ -189,6 +241,7 @@ document.getElementById('back-btn').onclick = () => {
 
 // 시작 시 목록 로드
 window.onload = loadCharacterList;
+
 
 
 
