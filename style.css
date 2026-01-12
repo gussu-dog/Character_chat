@@ -121,6 +121,47 @@ body {
     max-width: 75%;
 }
 
+/* 채팅창 내 메시지 한 줄을 감싸는 컨테이너 */
+.message-wrapper {
+    display: flex;
+    align-items: flex-end; /* 시간과 말풍선을 하단 정렬 */
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+/* 상대방 메시지 래퍼 (왼쪽 정렬) */
+.bot-wrapper {
+    justify-content: flex-start;
+}
+
+/* 내 메시지 래퍼 (오른쪽 정렬) */
+.me-wrapper {
+    justify-content: flex-end;
+}
+
+/* 메시지 옆 시간 스타일 */
+.msg-time {
+    font-size: 10px;
+    color: #8e8e93; /* 연한 회색 */
+    margin: 0 5px; /* 말풍선과의 간격 */
+    white-space: nowrap; /* 줄바꿈 방지 */
+    user-select: none;
+}
+
+/* 기존 말풍선 스타일 유지 (margin-bottom 등은 래퍼에서 관리하므로 제거해도 됨) */
+.message-bubble, .my-message {
+    max-width: 65%; /* 시간이 들어갈 자리를 위해 너비 살짝 축소 */
+}
+
+/* 기존 중앙 시간 구분선 스타일은 유지 (오늘 오후 2:41 표시용) */
+.chat-time-divider {
+    text-align: center;
+    font-size: 11px;
+    color: #8e8e93;
+    margin: 15px 0;
+    width: 100%;
+}
+
 /* 타이핑 애니메이션 */
 .dot {
     width: 5px; height: 5px;
