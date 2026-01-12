@@ -1,6 +1,11 @@
 const sheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQd7MAwHPNY8jyOF2Fi5qFgtwnDHjjA1IzkEbN91axz8qNHIDum5T2X-zH8yZ2kqdZQC4Lj1jMYD00R/pub?gid=1156416394&single=true&output=csv";
 
 let storyData = {};
+// 시간을 가져오는 유틸리티 함수
+function getCurrentTime() {
+    const now = new Date();
+    return `${now.getHours() > 12 ? '오후' : '오전'} ${now.getHours() % 12 || 12}:${now.getMinutes().toString().padStart(2, '0')}`;
+}
 
 async function loadStory() {
     try {
@@ -60,12 +65,14 @@ function addMessage(text, sender) {
     chatWindow.scrollTop = chatWindow.scrollHeight;
 }
 
-// 타이핑 애니메이션 생성 함수
+// 타이핑 애니메이션을 말풍선 형태로 생성
 function showTypingIndicator() {
     const chatWindow = document.getElementById('chat-window');
     const typingDiv = document.createElement('div');
     typingDiv.id = 'typing-indicator';
-    typingDiv.className = 'typing-bubble';
+    typingDiv.className = 'message-bubble'; // 상대방 말풍선 디자인을 그대로 사용
+    typingDiv.style.display = 'flex';
+    typingDiv.style.gap = '4px';
     typingDiv.innerHTML = '<div class="dot"></div><div class="dot"></div><div class="dot"></div>';
     
     chatWindow.appendChild(typingDiv);
@@ -111,5 +118,6 @@ function showOptions(sceneId) {
 }
 
 loadStory();
+
 
 
