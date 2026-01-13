@@ -136,24 +136,28 @@ body {
     background-color: #e5e5ea;
 }
 
-/* --- 대화 페이지 --- */
+/* 대화 페이지 전체 컨테이너 */
 #game-page {
     height: 100%;
     display: flex;
     flex-direction: column;
-    background-color: #fff;
+    background-color: #ffffff; /* 하단 회색 공간 방지를 위해 배경색 고정 */
+    position: relative;
 }
 
-/* 대화창 내부 스크롤 영역 */
+/* 대화창 내부 스크롤 영역 - 이 부분이 핵심입니다! */
 #chat-window {
-    flex: 1;
-    overflow-y: auto;
-    padding: 15px;
-    padding-bottom: 120px; /* 옵션 버튼 공간 확보 */
+    flex: 1;            /* 헤더를 제외한 남은 공간을 모두 차지 */
+    overflow-y: auto;   /* 내용이 많아지면 내부 스크롤 생성 */
     display: flex;
     flex-direction: column;
     gap: 10px;
-    background-color: #fff;
+    padding: 15px;
+    padding-bottom: 140px; /* 선택지 버튼에 가려지지 않게 여백 확보 */
+    background-color: #ffffff;
+    
+    /* 중요: 스크롤이 작동하려면 높이를 제한해야 합니다 */
+    height: 0;          /* flex-grow(flex:1)와 결합하여 부모 안에서만 늘어나게 함 */
 }
 
 /* 말풍선 */
@@ -180,17 +184,18 @@ body {
     border-bottom-right-radius: 4px;
 }
 
-/* 옵션 컨테이너가 대화창 위에 떠 있게 */
+/* 하단 선택지 컨테이너 - 회색 공간을 가리기 위해 배경 수정 */
 .options-container {
     position: absolute;
     bottom: 0;
     width: 100%;
-    padding: 20px 15px;
-    background: linear-gradient(to top, rgba(255,255,255,1) 70%, rgba(255,255,255,0));
+    padding: 20px 15px 30px;
+    /* 위쪽은 투명하게, 아래쪽은 흰색 배경으로 채워 대화창과 자연스럽게 연결 */
+    background: linear-gradient(to top, rgba(255,255,255,1) 80%, rgba(255,255,255,0));
     display: flex;
     flex-direction: column;
     gap: 10px;
-    z-index: 5;
+    z-index: 10;
 }
 
 .option-btn {
