@@ -110,6 +110,32 @@ body {
 .dots::after { content: ''; animation: dotsAnim 1.5s steps(4, end) infinite; }
 @keyframes dotsAnim { 0%, 20% { content: ''; } 40% { content: '.'; } 60% { content: '..'; } 80%, 100% { content: '...'; } }
 
+/* --- 초기화 버튼 영역 --- */
+.footer-settings {
+    padding: 15px;
+    background-color: #f2f2f7; /* 배경색을 목록 페이지와 통일 */
+    border-top: 1px solid #d1d1d6;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0; /* 높이 고정 */
+}
+
+.reset-all-btn {
+    background: none;
+    border: none;
+    color: #8E8E93;
+    font-size: 13px;
+    text-decoration: underline;
+    cursor: pointer;
+    padding: 5px 10px;
+    transition: color 0.2s;
+}
+
+.reset-all-btn:hover {
+    color: #ff3b30; /* 마우스 올리면 경고 의미로 빨간색 */
+}
+
 #chat-window::-webkit-scrollbar { width: 4px; }
 #chat-window::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 10px; }
 .dot { width: 5px; height: 5px; background: #8e8e93; border-radius: 50%; display: inline-block; animation: blink 1.4s infinite; margin: 0 2px; }
