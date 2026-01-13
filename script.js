@@ -147,11 +147,13 @@ async function playScene(sceneId) {
     }
 
     const typing = showTyping();
+    // 0.8초 ~ 1.8초 사이의 랜덤한 대기 시간 설정 (입력 중... 표시 시간)
+    const randomDelay = Math.floor(Math.random() * 1000) + 800;
     setTimeout(() => {
         if(typing && typing.parentNode) typing.parentNode.removeChild(typing);
         addMessage(scene.text, 'bot');
         showOptions(sceneId);
-    }, 1000);
+    }, randomDelay);
 }
 
 function showTyping() {
@@ -239,6 +241,7 @@ function clearAllSaves() {
 document.addEventListener('DOMContentLoaded', () => {
     loadCharacterList();
 });
+
 
 
 
