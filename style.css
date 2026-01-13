@@ -300,3 +300,21 @@ body {
 .image-message-wrapper.me {
     align-items: flex-end; /* 내 이미지는 오른쪽에 */
 }
+
+/* 메인 화면(목록) 헤더의 Contact 글자 */
+.chat-header .contact-name {
+    color: #8E8E93;          /* 아이폰 시스템 그레이 색상 */
+    font-weight: 700;        /* 볼드체 적용 */
+    font-size: 17px;         /* 적당한 크기 */
+    letter-spacing: -0.3px;  /* 자간을 줄여서 더 세련되게 */
+    padding-left: 5px;       /* 왼쪽 여백 살짝 추가 */
+}
+
+/* 메인 화면 헤더 자체의 여백도 조정하면 더 예쁩니다 */
+#list-page .chat-header {
+    padding: 15px 20px;      /* 위아래, 좌우 여백 */
+    display: flex;
+    align-items: center;
+    background-color: #f2f2f7; /* 배경색 통일 */
+    border-bottom: 1px solid #d1d1d6;
+}
