@@ -7,6 +7,19 @@ let historyData = [];
 let currentCharName = "";
 let currentGid = ""; // resetChat 기능을 위해 추가
 
+// 현재 시간을 '오후 2:30' 형식으로 반환하는 함수
+function getCurrentTime() {
+    const now = new Date();
+    let hours = now.getHours();
+    const minutes = now.getMinutes().toString().padStart(2, '0');
+    const ampm = hours >= 12 ? '오후' : '오전';
+    
+    hours = hours % 12;
+    hours = hours ? hours : 12; // 0시를 12시로 표시
+    
+    return `${ampm} ${hours}:${minutes}`;
+}
+
 // 세이브 키 생성
 function getSaveKey(charName) {
     return `game_save_${charName}`;
@@ -17,14 +30,19 @@ function addMessage(text, sender, isLoadingSave = false, time = "") {
     const chatWindow = document.getElementById('chat-window');
     if (!chatWindow) return;
 
+    // [추가] 시간이 비어있고, 세이브 데이터를 불러오는 중이 아닐 때만 현재 시간을 생성
+    let displayTime = time;
+    if (!displayTime && !isLoadingSave) {
+        displayTime = getCurrentTime();
+    }
+
     // 1. 구분선 처리 (text가 --- 로 시작하는 경우)
     if (text.trim() === "---") {
         const divider = document.createElement('div');
         divider.className = 'date-divider';
-        divider.innerHTML = `<span>구분선/날짜</span>`; // 필요시 시트의 다음 컬럼 값을 넣어도 좋습니다.
+        divider.innerHTML = `<span>구분선/날짜</span>`; 
         chatWindow.appendChild(divider);
     } else {
-
     const wrapper = document.createElement('div');
         wrapper.className = sender === 'me' ? 'message-wrapper me' : 'message-wrapper';
         
@@ -34,7 +52,7 @@ function addMessage(text, sender, isLoadingSave = false, time = "") {
 
         const timeSpan = document.createElement('span');
         timeSpan.className = 'message-time';
-        timeSpan.innerText = time; // 시트에서 가져온 시간 표시
+        timeSpan.innerText = displayTime; // 시트에서 가져온 시간 표시
 
         wrapper.appendChild(msgDiv);
         wrapper.appendChild(timeSpan);
@@ -257,6 +275,7 @@ function clearAllSaves() {
 document.addEventListener('DOMContentLoaded', () => {
     loadCharacterList();
 });
+
 
 
 
