@@ -38,7 +38,7 @@ body {
     z-index: 10;
 }
 #list-page .chat-header { justify-content: center; }
-.back-btn { cursor: pointer; font-size: 22px; color: #007AFF; margin-right: 15px; }
+.back-btn { cursor: pointer; font-size: 22px; color: #4da2ff; margin-right: 15px; }
 #header-name { color: #000; font-weight: 600; font-size: 17px; }
 
 /* 5. 캐릭터 목록 (메인화면 복구) */
@@ -85,7 +85,7 @@ body {
     line-height: 1.4; max-width: 80%; word-break: keep-all;
 }
 .message-bubble { background: #e9e9eb; align-self: flex-start; border-bottom-left-radius: 4px; }
-.my-message { background: #007AFF; color: #fff; align-self: flex-end; border-bottom-right-radius: 4px; }
+.my-message { background: #4da2ff; color: #fff; align-self: flex-end; border-bottom-right-radius: 4px; }
 
 /* 8. 하단 옵션창 */
 .options-container {
@@ -96,7 +96,7 @@ body {
     z-index: 20;
 }
 .option-btn {
-    background: #007AFF; color: #fff; border: none; padding: 12px;
+    background: #4da2ff; color: #fff; border: none; padding: 12px;
     border-radius: 20px; cursor: pointer; font-size: 14px;
     box-shadow: 0 2px 6px rgba(0,122,255,0.2);
 }
@@ -104,7 +104,7 @@ body {
 /* 9. 로딩 및 기타 */
 .loading-container {
     position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-    background: #007AFF; display: flex; justify-content: center; align-items: center; z-index: 1000;
+    background: #4da2ff; display: flex; justify-content: center; align-items: center; z-index: 1000;
 }
 .loading-text { color: #fff; font-size: 20px; font-weight: bold; }
 .dots::after { content: ''; animation: dotsAnim 1.5s steps(4, end) infinite; }
