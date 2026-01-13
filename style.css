@@ -141,23 +141,24 @@ body {
     height: 100%;
     display: flex;
     flex-direction: column;
-    background-color: #ffffff; /* 하단 회색 공간 방지를 위해 배경색 고정 */
+    background-color: #ffffff; /* 전체 배경을 흰색으로 고정하여 회색 노출 방지 */
     position: relative;
+    overflow: hidden;
 }
 
-/* 대화창 내부 스크롤 영역 - 이 부분이 핵심입니다! */
+/* 대화창 내부 스크롤 영역 */
 #chat-window {
-    flex: 1;            /* 헤더를 제외한 남은 공간을 모두 차지 */
+    flex: 1;            /* 헤더와 하단 영역 사이의 남은 공간을 모두 차지 */
     overflow-y: auto;   /* 내용이 많아지면 내부 스크롤 생성 */
     display: flex;
     flex-direction: column;
     gap: 10px;
     padding: 15px;
-    padding-bottom: 140px; /* 선택지 버튼에 가려지지 않게 여백 확보 */
+    padding-bottom: 120px; /* 선택지 버튼 높이만큼만 여백을 줌 */
     background-color: #ffffff;
     
-    /* 중요: 스크롤이 작동하려면 높이를 제한해야 합니다 */
-    height: 0;          /* flex-grow(flex:1)와 결합하여 부모 안에서만 늘어나게 함 */
+    /* 스크롤바가 생기도록 높이 계산을 명확히 함 */
+    height: 100%;
 }
 
 /* 말풍선 */
@@ -184,18 +185,27 @@ body {
     border-bottom-right-radius: 4px;
 }
 
-/* 하단 선택지 컨테이너 - 회색 공간을 가리기 위해 배경 수정 */
+/* 하단 선택지 컨테이너 - 배경을 더 얇고 자연스럽게 수정 */
 .options-container {
     position: absolute;
     bottom: 0;
     width: 100%;
-    padding: 20px 15px 30px;
-    /* 위쪽은 투명하게, 아래쪽은 흰색 배경으로 채워 대화창과 자연스럽게 연결 */
-    background: linear-gradient(to top, rgba(255,255,255,1) 80%, rgba(255,255,255,0));
+    padding: 10px 15px 25px; /* 하단 여백 최적화 */
+    /* 그라데이션 범위를 좁혀서 회색 느낌을 제거 */
+    background: linear-gradient(to top, rgba(255,255,255,1) 50%, rgba(255,255,255,0));
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
     z-index: 10;
+}
+
+/* [선택 사항] 스크롤바를 아이폰처럼 얇고 깔끔하게 만들기 */
+#chat-window::-webkit-scrollbar {
+    width: 4px;
+}
+#chat-window::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
 }
 
 .option-btn {
