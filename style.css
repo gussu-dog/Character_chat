@@ -267,3 +267,36 @@ body {
     backdrop-filter: blur(5px);
     font-weight: 500;
 }
+
+/* 채팅 이미지 스타일 */
+.chat-image {
+    max-width: 80%; /* 말풍선과 동일한 너비 제한 */
+    border-radius: 12px;
+    margin-top: 5px; /* 텍스트 위 이미지와 간격 */
+    margin-bottom: 5px; /* 이미지 아래 텍스트와 간격 */
+    object-fit: cover;
+    display: block; /* 가끔 인라인 요소가 되면서 생기는 문제 방지 */
+    cursor: pointer; /* 이미지 클릭 시 확대 기능 등을 위해 미리 설정 */
+}
+
+/* 내 이미지, 상대 이미지 위치 조절 */
+.message-bubble .chat-image {
+    align-self: flex-start; /* 상대방 이미지 */
+}
+
+.my-message .chat-image {
+    align-self: flex-end;   /* 내 이미지 */
+}
+
+/* 이미지만 보내는 경우를 대비하여 wrapper에서 flex-direction을 유지 */
+.image-message-wrapper {
+    display: flex;
+    flex-direction: column; /* 이미지만 있을 때도 flex-end, flex-start 적용 */
+    align-items: flex-start; /* 기본은 상대방 이미지 */
+    gap: 5px;
+    max-width: 80%;
+}
+
+.image-message-wrapper.me {
+    align-items: flex-end; /* 내 이미지는 오른쪽에 */
+}
