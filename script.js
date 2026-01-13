@@ -196,7 +196,8 @@ async function loadCharacterList() {
         characters.forEach(char => {
             const item = document.createElement('div');
             item.className = 'character-item';
-            const imgHtml = char.photo ? `<img src="${char.photo}" class="profile-img">` : `<div class="profile-placeholder"></div>`;
+            let profilePic = char.photo ? char.photo.replace(/^\*/, "") : "";
+            const imgHtml = profilePic ? `<img src="${profilePic}" class="profile-img">` : `<div class="profile-placeholder"></div>`;
             item.innerHTML = `<div class="profile-group">${imgHtml}<span>${char.name}</span></div><span class="arrow">〉</span>`;
             item.onclick = () => startChat(char.name, char.gid);
             listDiv.appendChild(item);
@@ -322,6 +323,7 @@ function clearAllSaves() {
 document.addEventListener('DOMContentLoaded', () => {
     loadCharacterList();
 });
+
 
 
 
