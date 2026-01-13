@@ -136,25 +136,43 @@ body {
     color: #ff3b30; /* 마우스 올리면 경고 의미로 빨간색 */
 }
 
-/* 목록 페이지에서 헤더와 버튼 사이의 목록 영역만 스크롤되게 함 */
+/* 메인 목록 페이지 전체 */
 #list-page {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%; /* 프레임 높이 740px을 다 쓰겠다고 선언 */
     display: flex;
     flex-direction: column;
-    height: 100%;
-}
-
-.list-container {
-    flex: 1; /* 이 영역이 남는 공간을 다 차지하며 스크롤됨 */
-    overflow-y: auto;
-}
-
-.footer-settings {
-    flex-shrink: 0; /* 버튼 영역이 찌그러지지 않게 고정 */
     background-color: #f2f2f7;
+    overflow: hidden; /* 페이지 자체가 밖으로 나가는 건 방지 */
+}
+
+/* 캐릭터 목록이 담기는 컨테이너 - 여기가 스크롤 핵심! */
+.list-container {
+    flex: 1;            /* 헤더와 하단 버튼 사이의 남은 공간을 다 차지 */
+    overflow-y: auto;   /* 캐릭터가 많아지면 자동으로 스크롤바 생성 */
+    padding: 20px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    
+    /* iOS 등 모바일 브라우저에서 부드러운 스크롤 보장 */
+    -webkit-overflow-scrolling: touch; 
+}
+
+/* 하단 초기화 버튼 영역 */
+.footer-settings {
+    flex-shrink: 0;     /* 목록이 길어져도 이 버튼 영역은 찌그러지지 않음 */
     padding: 15px;
+    background-color: #f2f2f7;
     border-top: 1px solid #d1d1d6;
     text-align: center;
+    z-index: 5;         /* 목록보다 위에 보이게 설정 */
 }
+
+
 
 #chat-window::-webkit-scrollbar { width: 4px; }
 #chat-window::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 10px; }
