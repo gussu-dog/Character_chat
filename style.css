@@ -79,8 +79,21 @@ body {
     min-height: 0;
 }
 
+/* 메시지 나타나기 애니메이션 */
+@keyframes message-appear {
+    0% {
+        opacity: 0;
+        transform: translateY(10px); /* 10px 아래에서 시작 */
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);    /* 제자리로 */
+    }
+}
+
 /* 7. 말풍선 디자인 */
 .message-bubble, .my-message {
+    animation: message-appear 0.3s ease-out forwards;
     padding: 10px 14px; border-radius: 18px; font-size: 15px;
     line-height: 1.4; max-width: 80%; word-break: keep-all;
 }
