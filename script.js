@@ -215,7 +215,7 @@ const backBtn = document.getElementById('back-btn');
 if(backBtn) {
     backBtn.onclick = () => {
         document.getElementById('game-page').style.display = 'none';
-        document.getElementById('list-page').style.display = 'block';
+        document.getElementById('list-page').style.display = 'flex';
         currentCharName = "";
     };
 }
@@ -237,6 +237,7 @@ function clearAllSaves() {
 document.addEventListener('DOMContentLoaded', () => {
     loadCharacterList();
 });
+
 
 
 
