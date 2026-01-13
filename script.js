@@ -37,11 +37,15 @@ function addMessage(text, sender, isLoadingSave = false, time = "") {
     }
 
     // 1. 구분선 처리 (text가 --- 로 시작하는 경우)
-    if (text.trim() === "---") {
+    if (text.trim().startsWith("---")) {
         const divider = document.createElement('div');
         divider.className = 'date-divider';
-        divider.innerHTML = '<span>' + text + '</span>';
+
+        // "---" 뒤에 글자가 있다면 그 글자를 보여주고, 없으면 "구분선"이라고 표시
+    const dividerText = text.replace("---", "").trim() || "구분선";
+    divider.innerHTML = `<span>${dividerText}</span>`;
         chatWindow.appendChild(divider);
+        return;
     } else {
     const wrapper = document.createElement('div');
         wrapper.className = sender === 'me' ? 'message-wrapper me' : 'message-wrapper';
@@ -277,6 +281,7 @@ function clearAllSaves() {
 document.addEventListener('DOMContentLoaded', () => {
     loadCharacterList();
 });
+
 
 
 
