@@ -114,31 +114,45 @@ function startChat(name, gid) {
     if(listPage) listPage.style.display = 'none';
     if(gamePage) gamePage.style.display = 'flex'; 
     
-    document.getElementById('chat-window').innerHTML = '';
+    const chatWindow = document.getElementById('chat-window');
+    chatWindow.innerHTML = '';
     document.getElementById('options').innerHTML = '';
     
     loadStory(`${baseSheetUrl}${gid}`).then(() => {
-        // 기존 저장된 메시지 불러오기 (historyData 포함)
-        historyData.forEach(h => {
-            let hImg = h.imageUrl || "";
-            if (hImg.startsWith('*') || h.id === 1) hImg = ""; // 별표 예외 처리
-            addMessage(h.text, h.sender, true, h.time, hImg);
-        }); 
+        // 1. 고정 히스토리 로드 (ID < 0)
+        if (historyData.length > 0) {
+            historyData.forEach(h => {
+                let hImg = h.imageUrl || "";
+                if (hImg.startsWith('*')) hImg = ""; 
+                addMessage(h.text, h.sender, true, h.time, hImg);
+            });
+        }
 
+        // 2. 세이브 데이터 확인
         const saved = localStorage.getItem(getSaveKey(name));
+        
         if (saved) {
             const parsed = JSON.parse(saved);
-            parsed.messages.forEach(m => {
-                let mImg = m.imageUrl || "";
-                if (mImg.startsWith('*') || (index === 0 && parsed.messages.length > 0)) { // 별표 예외 처리
-                    if (mImg.startsWith('*')) mImg = "";
-                    if (index === 0) mImg = "";
-                }
-                addMessage(m.text, m.sender, true, m.time, mImg);
-            });
-            showOptions(parsed.lastSceneId);
+            // 저장된 메시지가 있으면 화면에 그리기
+            if (parsed.messages && parsed.messages.length > 0) {
+                parsed.messages.forEach(m => {
+                    let mImg = m.imageUrl || "";
+                    if (mImg.startsWith('*')) mImg = ""; // 별표 예외처리만 적용
+                    addMessage(m.text, m.sender, true, m.time, mImg);
+                });
+                // 마지막 지점의 옵션 보여주기
+                showOptions(parsed.lastSceneId);
+            } else {
+                // 세이브 데이터는 있는데 메시지가 비어있는 예외 상황
+                if (storyData["1"]) playScene("1");
+            }
         } else {
-            if (storyData["1"]) playScene("1");
+            // 3. 세이브가 아예 없는 '완전 처음'인 경우 -> 1번 장면 실행
+            if (storyData["1"]) {
+                playScene("1");
+            } else {
+                console.error("ID 1번 장면을 찾을 수 없습니다. 시트를 확인하세요.");
+            }
         }
     }).catch(err => {
         console.error("스토리 로드 중 에러 발생:", err);
@@ -323,6 +337,7 @@ function clearAllSaves() {
 document.addEventListener('DOMContentLoaded', () => {
     loadCharacterList();
 });
+
 
 
 
