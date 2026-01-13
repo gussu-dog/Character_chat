@@ -42,7 +42,7 @@ body {
 /* 뒤로가기 버튼 여백 */
 .back-btn {
     cursor: pointer;
-    font-size: 22px;
+    font-size: 20px;
     color: #007AFF;
     margin-right: 12px;  /* 화살표와 이름 사이를 조금 더 띄움 */
     display: flex;
@@ -52,10 +52,9 @@ body {
 
 /* 이름 텍스트 */
 #header-name {
+    font-weight: 700;
+    font-size: 17px;
     color: #000;
-    font-weight: 600;
-    font-size: 18px;     /* 살짝 키워도 가독성이 좋아집니다 */
-    letter-spacing: -0.5px; /* 자간을 줄여 더 깔끔하게 */
 }
 
 /* 5. 캐릭터 목록 (메인화면 복구) */
@@ -98,8 +97,11 @@ body {
 
 /* 대화 페이지 헤더 수정 */
 #game-page .chat-header {
-    padding-left: 20px; /* 전체적인 왼쪽 시작 여백을 조금 더 줌 */
-    gap: 5px;           /* 버튼과 이름 사이의 기본 간격 설정 */
+    display: flex;
+    align-items: center;
+    padding: 15px 16px;  /* 헤더 전체에 좌우 여백 16px 부여 */
+    background-color: #fff;
+    border-bottom: 1px solid #eee;
 }
 
 /* 메시지 나타나기 애니메이션 */
@@ -260,10 +262,11 @@ body {
 }
 
 .message-time {
+    display: block;      /* 시간을 한 줄 차지하게 설정 */
     font-size: 11px;
     color: #8e8e93;
+    margin-top: 5px;    /* 말풍선/이미지와의 간격을 5px 추가 */
     margin-bottom: 2px;
-    flex-shrink: 0;
 }
 
 /* 날짜/장면 구분선 스타일 */
@@ -332,7 +335,7 @@ body {
 .chat-header .contact-name {
     color: #8E8E93;          /* 아이폰 시스템 그레이 색상 */
     font-weight: 700;        /* 볼드체 적용 */
-    font-size: 17px;         /* 적당한 크기 */
+    font-size: 18px;         /* 적당한 크기 */
     letter-spacing: -0.3px;  /* 자간을 줄여서 더 세련되게 */
     padding-left: 5px;       /* 왼쪽 여백 살짝 추가 */
 }
@@ -356,4 +359,15 @@ body {
 
 .message-wrapper.me .bubble-container {
     align-items: flex-end;
+}
+
+/* 상대방 메시지 시간 왼쪽 여백 (말풍선 끝선에 맞춤) */
+.bubble-container .message-time {
+    margin-left: 2px;
+}
+
+/* 내 메시지 시간 오른쪽 여백 (말풍선 끝선에 맞춤) */
+.message-wrapper.me .bubble-container .message-time {
+    margin-right: 2px;
+    text-align: right;   /* 내 메시지 시간은 오른쪽 정렬 */
 }
