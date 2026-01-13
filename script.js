@@ -36,10 +36,10 @@ function addMessage(text, sender, isLoadingSave = false) {
     }
 }
 
-// 5. 대화 시작
+// 5. 대화 시작 (수정 버전)
 function startChat(name, gid) {
     currentCharName = name;
-    currentGid = gid; // 초기화 기능을 위해 저장
+    currentGid = gid; 
     
     const headerName = document.getElementById('header-name');
     const listPage = document.getElementById('list-page');
@@ -47,15 +47,18 @@ function startChat(name, gid) {
     
     if(headerName) headerName.innerText = name;
     if(listPage) listPage.style.display = 'none';
-    if(gamePage) gamePage.style.display = 'block';
+    
+    // 핵심 수정: 'block' 대신 'flex'를 사용해야 CSS 스크롤이 작동합니다!
+    if(gamePage) gamePage.style.display = 'flex'; 
     
     document.getElementById('chat-window').innerHTML = '';
     document.getElementById('options').innerHTML = '';
     
     loadStory(`${baseSheetUrl}${gid}`).then(() => {
-        const saved = localStorage.getItem(getSaveKey(name));
+        // 기존 저장된 메시지 불러오기 (historyData 포함)
         historyData.forEach(h => addMessage(h.text, h.sender, true));
 
+        const saved = localStorage.getItem(getSaveKey(name));
         if (saved) {
             const parsed = JSON.parse(saved);
             parsed.messages.forEach(m => addMessage(m.text, m.sender, true));
@@ -234,6 +237,7 @@ function clearAllSaves() {
 document.addEventListener('DOMContentLoaded', () => {
     loadCharacterList();
 });
+
 
 
 
