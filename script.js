@@ -6,6 +6,7 @@ let storyData = {};
 let historyData = [];
 let currentCharName = "";
 let currentGid = ""; // resetChat 기능을 위해 추가
+let currentProfileImg = "";
 
 // 현재 시간을 '오후 2:30' 형식으로 반환하는 함수
 function getCurrentTime() {
@@ -30,64 +31,58 @@ function addMessage(text, sender, isLoadingSave = false, time = "", imageUrl = "
     const chatWindow = document.getElementById('chat-window');
     if (!chatWindow) return;
 
-    // [추가] 시간이 비어있고, 세이브 데이터를 불러오는 중이 아닐 때만 현재 시간을 생성
-    let displayTime = time;
-    if (!displayTime && !isLoadingSave) {
-        displayTime = getCurrentTime();
-    }
+    let displayTime = time || (!isLoadingSave ? getCurrentTime() : "");
 
+    // 1. 구분선 처리
     if (text.trim().startsWith("---")) {
-        // ... (기존 구분선 처리 로직 유지) ...
         const divider = document.createElement('div');
         divider.className = 'date-divider';
-        const dividerText = text.replace("---", "").trim() || "구분선";
-        divider.innerHTML = `<span>${dividerText}</span>`; 
+        divider.innerHTML = `<span>${text.replace("---", "").trim() || "구분선"}</span>`;
         chatWindow.appendChild(divider);
-        setTimeout(() => { chatWindow.scrollTop = chatWindow.scrollHeight; }, 10);
-        return; // 구분선은 이미지/텍스트 메시지와 분리
-    } 
-    
-    // 이미지와 텍스트를 함께, 또는 이미지/텍스트 단독으로 보내는 로직
-    const isImageOnly = imageUrl && !text; // 이미지 링크만 있는 경우
-    const isTextOnly = text && !imageUrl; // 텍스트 링크만 있는 경우
-    const isCombined = text && imageUrl; // 둘 다 있는 경우
-
-    if (isImageOnly || isCombined || isTextOnly) { // 어떤 메시지든 이 블록에서 처리
-        const wrapper = document.createElement('div');
-        wrapper.className = sender === 'me' ? 'message-wrapper me' : 'message-wrapper';
-
-        // 이미지 전용 메시지의 경우 align-items를 조절하기 위한 wrapper 클래스 추가
-        if (imageUrl) {
-            wrapper.classList.add('image-message-wrapper'); 
-            if (sender === 'me') {
-                wrapper.classList.add('me');
-            }
-        }
-
-        // 이미지 엘리먼트 생성 및 추가
-        if (imageUrl) {
-            const imgElement = document.createElement('img');
-            imgElement.src = imageUrl;
-            imgElement.className = 'chat-image';
-            wrapper.appendChild(imgElement);
-        }
-
-        // 텍스트 엘리먼트 생성 및 추가
-        if (text) {
-            const msgDiv = document.createElement('div');
-            msgDiv.className = sender === 'me' ? 'my-message' : 'message-bubble';
-            msgDiv.innerHTML = text.replace(/\\n/g, '<br>');
-            wrapper.appendChild(msgDiv);
-        }
-
-        // 시간 엘리먼트 생성 및 추가
-        const timeSpan = document.createElement('span');
-        timeSpan.className = 'message-time';
-        timeSpan.innerText = displayTime;
-        wrapper.appendChild(timeSpan);
-        
-        chatWindow.appendChild(wrapper);
+        return;
     }
+
+    // 2. 메시지 래퍼 생성
+    const wrapper = document.createElement('div');
+    wrapper.className = sender === 'me' ? 'message-wrapper me' : 'message-wrapper';
+
+    // 3. 상대방일 때만 프로필 이미지 추가
+    if (sender !== 'me') {
+        const profileImg = document.createElement('img');
+        profileImg.className = 'chat-profile-img';
+        // 별표 처리가 된 프사일 수 있으므로 replace 적용
+        profileImg.src = currentProfileImg ? currentProfileImg.replace(/^\*/, "") : "기본프사주소"; 
+        wrapper.appendChild(profileImg);
+    }
+
+    // 4. 말풍선 컨테이너 생성
+    const bubbleContainer = document.createElement('div');
+    bubbleContainer.className = 'bubble-container';
+
+    // 이미지 메시지 처리 (O열 데이터)
+    if (imageUrl) {
+        const imgElement = document.createElement('img');
+        imgElement.src = imageUrl;
+        imgElement.className = 'chat-image';
+        bubbleContainer.appendChild(imgElement);
+    }
+
+    // 텍스트 메시지 처리
+    if (text) {
+        const msgDiv = document.createElement('div');
+        msgDiv.className = sender === 'me' ? 'my-message' : 'message-bubble';
+        msgDiv.innerHTML = text.replace(/\\n/g, '<br>');
+        bubbleContainer.appendChild(msgDiv);
+    }
+
+    // 시간 추가
+    const timeSpan = document.createElement('span');
+    timeSpan.className = 'message-time';
+    timeSpan.innerText = displayTime;
+    bubbleContainer.appendChild(timeSpan);
+
+    wrapper.appendChild(bubbleContainer);
+    chatWindow.appendChild(wrapper);
 
     setTimeout(() => {
         chatWindow.scrollTop = chatWindow.scrollHeight;
@@ -102,9 +97,10 @@ function addMessage(text, sender, isLoadingSave = false, time = "", imageUrl = "
 }
 
 // 5. 대화 시작
-function startChat(name, gid) {
+function startChat(name, gid, photo) {
     currentCharName = name;
-    currentGid = gid; 
+    currentGid = gid;
+    currentProfileImg = photo;
     
     const headerName = document.getElementById('header-name');
     const listPage = document.getElementById('list-page');
@@ -213,7 +209,7 @@ async function loadCharacterList() {
             let profilePic = char.photo ? char.photo.replace(/^\*/, "") : "";
             const imgHtml = profilePic ? `<img src="${profilePic}" class="profile-img">` : `<div class="profile-placeholder"></div>`;
             item.innerHTML = `<div class="profile-group">${imgHtml}<span>${char.name}</span></div><span class="arrow">〉</span>`;
-            item.onclick = () => startChat(char.name, char.gid);
+            item.onclick = () => startChat(char.name, char.gid, char.photo);
             listDiv.appendChild(item);
         });
 
@@ -337,6 +333,7 @@ function clearAllSaves() {
 document.addEventListener('DOMContentLoaded', () => {
     loadCharacterList();
 });
+
 
 
 
