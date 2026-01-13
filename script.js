@@ -40,7 +40,7 @@ function addMessage(text, sender, isLoadingSave = false, time = "") {
     if (text.trim() === "---") {
         const divider = document.createElement('div');
         divider.className = 'date-divider';
-        divider.innerHTML = `<span>구분선/날짜</span>`; 
+        divider.innerHTML = '<span>' + text + '</span>';
         chatWindow.appendChild(divider);
     } else {
     const wrapper = document.createElement('div');
@@ -70,6 +70,7 @@ function addMessage(text, sender, isLoadingSave = false, time = "") {
         saveData.messages.push({ text, sender, time: displayTime }); 
         localStorage.setItem(getSaveKey(currentCharName), JSON.stringify(saveData));
     }
+}
 }
 
 // 5. 대화 시작 (수정 버전)
@@ -118,6 +119,7 @@ async function loadStory(fullUrl) {
             const cols = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(c => c.trim().replace(/"/g, ""));
             const id = parseInt(cols[0]);
             if (!isNaN(id)) {
+                const timeValue = cols[10] || "";
                 if (id < 0) {
                     historyData.push({ id: id, text: cols[1], sender: cols[2] === 'me' ? 'me' : 'bot', time: timeValue });
                 } else {
@@ -275,11 +277,6 @@ function clearAllSaves() {
 document.addEventListener('DOMContentLoaded', () => {
     loadCharacterList();
 });
-
-
-
-
-
 
 
 
