@@ -21,7 +21,13 @@ function addMessage(text, sender, isLoadingSave = false) {
     msgDiv.className = sender === 'me' ? 'my-message' : 'message-bubble';
     msgDiv.innerHTML = text.replace(/\\n/g, '<br>');
     chatWindow.appendChild(msgDiv);
-    chatWindow.scrollTop = chatWindow.scrollHeight;
+
+    // --- 여기를 수정합니다 ---
+    // 브라우저가 화면을 갱신할 시간을 아주 잠깐(10ms) 준 뒤 스크롤
+    setTimeout(() => {
+        chatWindow.scrollTop = chatWindow.scrollHeight;
+    }, 10);
+    // -----------------------
 
     if (!isLoadingSave && currentCharName) {
         let saveData = JSON.parse(localStorage.getItem(getSaveKey(currentCharName))) || { messages: [], lastSceneId: "1" };
@@ -228,5 +234,6 @@ function clearAllSaves() {
 document.addEventListener('DOMContentLoaded', () => {
     loadCharacterList();
 });
+
 
 
