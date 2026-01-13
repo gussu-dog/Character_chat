@@ -172,7 +172,22 @@ body {
     z-index: 5;         /* 목록보다 위에 보이게 설정 */
 }
 
+/* 캐릭터 목록과 채팅창 모두에 동일한 슬림 스크롤바 적용 */
+#character-list::-webkit-scrollbar,
+#chat-window::-webkit-scrollbar {
+    width: 4px; /* 스크롤바 너비 */
+}
 
+#character-list::-webkit-scrollbar-thumb,
+#chat-window::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.1); /* 아주 연한 회색 */
+    border-radius: 10px;
+}
+
+#character-list::-webkit-scrollbar-track,
+#chat-window::-webkit-scrollbar-track {
+    background: transparent; /* 배경은 투명하게 */
+}
 
 #chat-window::-webkit-scrollbar { width: 4px; }
 #chat-window::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 10px; }
