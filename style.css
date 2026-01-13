@@ -340,6 +340,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    max-width: 80%;
 }
 
 .message-wrapper.me .bubble-container {
