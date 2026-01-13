@@ -136,6 +136,26 @@ body {
     color: #ff3b30; /* 마우스 올리면 경고 의미로 빨간색 */
 }
 
+/* 목록 페이지에서 헤더와 버튼 사이의 목록 영역만 스크롤되게 함 */
+#list-page {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.list-container {
+    flex: 1; /* 이 영역이 남는 공간을 다 차지하며 스크롤됨 */
+    overflow-y: auto;
+}
+
+.footer-settings {
+    flex-shrink: 0; /* 버튼 영역이 찌그러지지 않게 고정 */
+    background-color: #f2f2f7;
+    padding: 15px;
+    border-top: 1px solid #d1d1d6;
+    text-align: center;
+}
+
 #chat-window::-webkit-scrollbar { width: 4px; }
 #chat-window::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 10px; }
 .dot { width: 5px; height: 5px; background: #8e8e93; border-radius: 50%; display: inline-block; animation: blink 1.4s infinite; margin: 0 2px; }
