@@ -126,7 +126,9 @@ async function loadCharacterList() {
         });
 
         if(spinner) spinner.style.display = 'none';
-        if(listPage) listPage.style.display = 'block';
+        if(listPage) {
+            listPage.style.setProperty('display', 'flex', 'important');
+        }
     } catch (e) {
         if(spinner) spinner.innerHTML = "<p style='color:white;'>목록 로드 실패. 앱스 스크립트 설정을 확인하세요.</p>";
         console.error("캐릭터 목록 오류:", e);
@@ -237,6 +239,7 @@ function clearAllSaves() {
 document.addEventListener('DOMContentLoaded', () => {
     loadCharacterList();
 });
+
 
 
 
