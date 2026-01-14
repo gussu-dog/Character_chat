@@ -35,17 +35,26 @@ function addMessage(text, sender, isLoadingSave = false, time = "", imageUrl = "
 
     // 1. 구분선 처리
     if (text.trim().startsWith("---")) {
+        let dividerText = text.replace("---", "").trim();
+        // 만약 내용 없이 '---'만 있다면 오늘 날짜 생성
+        if (dividerText === "") {
+            const now = new Date();
+            const options = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' };
+            dividerText = now.toLocaleDateString('ko-KR', options); // 예: 2024년 5월 20일 월요일
+        }
+        
         const divider = document.createElement('div');
         divider.className = 'date-divider';
-        divider.innerHTML = `<span>${text.replace("---", "").trim() || "구분선"}</span>`;
+        divider.innerHTML = `<span>${dividerText}</span>`;
         chatWindow.appendChild(divider);
         return;
     }
+    // --- [2] 텍스트와 이미지가 모두 없으면 메시지 생성 안 함 (프로필 방지) ---
+    if (!text && !imageUrl) return;
 
-    // 2. 메시지 래퍼 생성
     const wrapper = document.createElement('div');
     wrapper.className = sender === 'me' ? 'message-wrapper me' : 'message-wrapper';
-
+    
     // 3. 상대방일 때만 프로필 이미지 추가
     if (sender !== 'me') {
     const profileImg = document.createElement('img');
@@ -336,6 +345,7 @@ function clearAllSaves() {
 document.addEventListener('DOMContentLoaded', () => {
     loadCharacterList();
 });
+
 
 
 
