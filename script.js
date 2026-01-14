@@ -47,6 +47,15 @@ function addMessage(text, sender, isLoadingSave = false, time = "", imageUrl = "
         divider.className = 'date-divider';
         divider.innerHTML = `<span>${dividerText}</span>`;
         chatWindow.appendChild(divider);
+
+        if (!isLoadingSave && currentCharName) {
+            let saveData = JSON.parse(localStorage.getItem(getSaveKey(currentCharName))) || { messages: [], lastSceneId: "1" };
+            // 구분선은 sender를 'system' 혹은 'divider'로 표시해서 저장
+            saveData.messages.push({ text: `---${dividerText}`, sender: 'system', time: displayTime });
+            localStorage.setItem(getSaveKey(currentCharName), JSON.stringify(saveData));
+        }
+
+        setTimeout(() => { chatWindow.scrollTop = chatWindow.scrollHeight; }, 10);
         return;
     }
     // --- [2] 텍스트와 이미지가 모두 없으면 메시지 생성 안 함 (프로필 방지) ---
@@ -359,6 +368,7 @@ function clearAllSaves() {
 document.addEventListener('DOMContentLoaded', () => {
     loadCharacterList();
 });
+
 
 
 
