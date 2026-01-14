@@ -258,7 +258,7 @@ async function playScene(sceneId) {
     // --- [수정] 텍스트가 존재하고, 구분선(---)이 아닐 때만 '입력 중' 표시 ---
     const isDivider = scene.text && scene.text.trim().startsWith("---");
 
-    if (scene.text || scene.imageUrl && !isDivider) {
+    if ((scene.text || scene.imageUrl) && !isDivider) {
     const typing = showTyping();
     // 0.8초 ~ 1.8초 사이의 랜덤한 대기 시간 설정 (입력 중... 표시 시간)
     const randomDelay = Math.floor(Math.random() * 1000) + 800;
@@ -375,21 +375,6 @@ function clearAllSaves() {
 document.addEventListener('DOMContentLoaded', () => {
     loadCharacterList();
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
