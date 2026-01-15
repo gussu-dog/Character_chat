@@ -97,14 +97,25 @@ timeSpan.className = 'message-time';
 timeSpan.innerText = displayTime;
 bubbleContainer.appendChild(timeSpan);
 
-// [추가] 만약 지금 메시지가 '이어지는 메시지'라면?
+// 2. [강력한 시간 숨기기 로직]
 if (isContinuation) {
-    // 직전 메시지 wrapper를 찾아서 그 안의 시간을 숨깁니다.
+    // 채팅창 내의 모든 메시지 요소를 가져옴
     const allWrappers = chatWindow.querySelectorAll('.message-wrapper');
-    if (allWrappers.length > 1) {
-        const lastWrapper = allWrappers[allWrappers.length - 2]; // 방금 추가한 것 바로 전
-        const lastTime = lastWrapper.querySelector('.message-time');
-        if (lastTime) lastTime.style.display = 'none'; // 이전 시간 숨기기
+    
+    // 현재 추가된 메시지(마지막 요소)를 제외한 이전 메시지들을 역순으로 탐색
+    for (let i = allWrappers.length - 2; i >= 0; i--) {
+        const prevWrapper = allWrappers[i];
+        
+        // 보낸 사람과 시간이 현재와 같다면 시간 숨김 처리
+        // 만약 중간에 다른 사람이나 다른 시간의 메시지가 나오면 루프 중단
+        const isSameSender = prevWrapper.classList.contains('me') === (sender === 'me');
+        const prevTimeElement = prevWrapper.querySelector('.message-time');
+        
+        if (isSameSender && prevTimeElement && prevTimeElement.innerText === displayTime) {
+            prevTimeElement.style.setProperty('display', 'none', 'important');
+        } else {
+            break; // 흐름이 끊기면 더 이상 탐색하지 않음
+        }
     }
 }
 
@@ -376,6 +387,7 @@ function clearAllSaves() {
 document.addEventListener('DOMContentLoaded', () => {
     loadCharacterList();
 });
+
 
 
 
