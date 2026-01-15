@@ -36,6 +36,7 @@ function addMessage(text, sender, isLoadingSave = false, time = "", imageUrl = "
     // 1. 구분선 처리
     if (text.trim().startsWith("---")) {
         lastSender = "";
+        lastTime = "";
         let dividerText = text.replace("---", "").trim();
         if (dividerText === "") {
             const now = new Date();
@@ -97,31 +98,26 @@ timeSpan.className = 'message-time';
 timeSpan.innerText = displayTime;
 bubbleContainer.appendChild(timeSpan);
 
-// 2. [강력한 시간 숨기기 로직]
-if (isContinuation) {
-    // 채팅창 내의 모든 메시지 요소를 가져옴
-    const allWrappers = chatWindow.querySelectorAll('.message-wrapper');
-    
-    // 현재 추가된 메시지(마지막 요소)를 제외한 이전 메시지들을 역순으로 탐색
-    for (let i = allWrappers.length - 2; i >= 0; i--) {
-        const prevWrapper = allWrappers[i];
-        
-        // 보낸 사람과 시간이 현재와 같다면 시간 숨김 처리
-        // 만약 중간에 다른 사람이나 다른 시간의 메시지가 나오면 루프 중단
-        const isSameSender = prevWrapper.classList.contains('me') === (sender === 'me');
-        const prevTimeElement = prevWrapper.querySelector('.message-time');
-        
-        if (isSameSender && prevTimeElement && prevTimeElement.innerText === displayTime) {
-            prevTimeElement.style.setProperty('display', 'none', 'important');
-        } else {
-            break; // 흐름이 끊기면 더 이상 탐색하지 않음
-        }
-    }
-}
+wrapper.appendChild(bubbleContainer);
 
-    wrapper.appendChild(bubbleContainer);
     chatWindow.appendChild(wrapper);
-
+    
+    if (isContinuation) {
+        const allWrappers = chatWindow.querySelectorAll('.message-wrapper');
+        // 이제 allWrappers.length - 1 이 방금 추가한 '나'입니다.
+        // i = allWrappers.length - 2 부터 위로 훑으며 숨깁니다.
+        for (let i = allWrappers.length - 2; i >= 0; i--) {
+            const prevWrapper = allWrappers[i];
+            const isSameSender = prevWrapper.classList.contains('me') === (sender === 'me');
+            const prevTimeElement = prevWrapper.querySelector('.message-time');
+            
+            if (isSameSender && prevTimeElement && prevTimeElement.innerText === displayTime) {
+                prevTimeElement.style.setProperty('display', 'none', 'important');
+            } else {
+                break; 
+            }}
+    }
+    
     // 현재 정보를 마지막 정보로 업데이트
     lastSender = sender;
     lastTime = displayTime;
@@ -387,6 +383,7 @@ function clearAllSaves() {
 document.addEventListener('DOMContentLoaded', () => {
     loadCharacterList();
 });
+
 
 
 
