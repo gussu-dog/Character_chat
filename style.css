@@ -398,8 +398,8 @@ body {
 
 /* 이어진 메시지 공통: 간격 좁히기 */
 .message-wrapper.continuation {
-    margin-top: -8px;
-    margin-bottom: 2px;
+    margin-top: -5px !important; /* 모든 연속 메시지 사이의 기본 간격 */
+    margin-bottom: 5px !important;
 }
 
 /* 1. 이어지는 상대방 메시지: 꼬리 제거 및 완전히 둥글게 */
@@ -423,6 +423,18 @@ body {
     margin-left: 48px; /* 프로필(40px) + 간격(8px) */
 }
 
-.message-wrapper + .message-wrapper.continuation {
+/* 2. [핵심] 꼬리가 있는 일반 메시지 바로 다음에 오는 첫 번째 연속 메시지 */
+/* 즉, '꼬리 있는 놈 + 꼬리 없는 놈' 사이만 더 바짝 붙입니다. */
+.message-wrapper:not(.continuation) + .message-wrapper.continuation {
+    margin-top: -18px !important; /* 첫 연결부만 강하게 끌어올림 */
+}
+
+/* 3. 내 메시지(me)도 동일한 로직 적용 */
+.message-wrapper.me:not(.continuation) + .message-wrapper.me.continuation {
     margin-top: -18px !important;
+}
+
+/* 4. 말풍선 자체 여백 조정 (선택사항) */
+.message-bubble, .my-message {
+    margin-bottom: 2px; /* 말풍선 자체의 하단 여백을 살짝 줘서 가독성 확보 */
 }
