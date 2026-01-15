@@ -54,7 +54,7 @@ body {
 .back-btn {
     background: none;
     border: none;
-    color: white;
+    color: #4da2ff;
     font-size: 24px;      /* 화살표 크기를 살짝 키움 */
     font-weight: bold;
     cursor: pointer;
@@ -64,14 +64,11 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    
-    /* 주변 요소와 간격 */
-    margin-right: 10px;
 }
 
 #back-btn:active {
-    background-color: rgba(255, 255, 255, 0.1); /* 살짝 밝아짐 */
-    border-radius: 8px;
+    background-color: rgba(0, 0, 0, 0.05); 
+    border-radius: 50%; 
 }
 
 /* 이름 텍스트 */
