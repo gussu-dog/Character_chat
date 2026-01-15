@@ -124,7 +124,7 @@ async function addMessage(text, sender, isLoadingSave = false, time = "", imageU
         
         // ✨ 타자기 효과 적용 (L열에 'type'이라고 적거나 horror일 때 자동 적용)
         if (!isLoadingSave && (effect === 'type' || effect === 'horror')) {
-            typeWriter(msgDiv, text, effect === 'horror' ? 150 : 50);
+            await typeWriter(msgDiv, text, effect === 'horror' ? 150 : 50);
         } else {
             msgDiv.innerHTML = text.replace(/\\n/g, '<br>');
         }
@@ -210,7 +210,7 @@ function startChat(name, gid, photo) {
                 parsed.messages.forEach(m => {
                     let mImg = m.imageUrl || "";
                     if (mImg.startsWith('*')) mImg = ""; 
-                    addMessage(m.text, m.sender, true, m.time, mImg);
+                    addMessage(m.text, m.sender, true, m.time, mImg, m.effect || "");
                 });
                 showOptions(parsed.lastSceneId);
             } else {
@@ -457,18 +457,6 @@ function clearAllSaves() {
 document.addEventListener('DOMContentLoaded', () => {
     loadCharacterList();
 });
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
