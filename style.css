@@ -367,3 +367,48 @@ body {
     margin-right: 2px;
     text-align: right;   /* 내 메시지 시간은 오른쪽 정렬 */
 }
+
+/* 기본 말풍선 꼬리 (예시: 왼쪽 꼬리) */
+.message-bubble::before {
+    content: '';
+    position: absolute;
+    top: 5px;
+    left: -8px;
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
+    border-right: 10px solid #ffffff; /* 말풍선 색상과 동일하게 */
+}
+
+/* 내 말풍선 꼬리 (예시: 오른쪽 꼬리) */
+.my-message::after {
+    content: '';
+    position: absolute;
+    top: 5px;
+    right: -8px;
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
+    border-left: 10px solid #fee500; /* 카톡 노란색 등 */
+}
+
+/* ✨ [핵심] 이어지는 메시지 처리 ✨ */
+
+/* 1. 이어지는 상대방 메시지: 꼬리 제거 및 모서리 둥글게 */
+.message-wrapper.continuation .message-bubble::before {
+    display: none; /* 꼬리 숨김 */
+}
+.message-wrapper.continuation .message-bubble {
+    border-top-left-radius: 15px !important; /* 꼬리가 있던 부분 둥글게 */
+}
+
+/* 2. 이어지는 내 메시지: 꼬리 제거 및 모서리 둥글게 */
+.message-wrapper.continuation.me .my-message::after {
+    display: none; /* 꼬리 숨김 */
+}
+.message-wrapper.continuation.me .my-message {
+    border-top-right-radius: 15px !important; /* 꼬리가 있던 부분 둥글게 */
+}
+
+/* 3. 간격 세밀 조정 */
+.message-wrapper.continuation {
+    margin-top: -12px; /* 위 메시지와 더 밀착 */
+}
