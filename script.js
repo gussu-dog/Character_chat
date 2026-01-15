@@ -50,12 +50,11 @@ function typeWriter(element, text, speed = 50) {
 }
 
 // 3. 메시지 추가 및 저장 (중복 및 괄호 오류 수정됨)
-function addMessage(text, sender, isLoadingSave = false, time = "", imageUrl = "", effect = "") {
+async function addMessage(text, sender, isLoadingSave = false, time = "", imageUrl = "", effect = "") {
     const chatWindow = document.getElementById('chat-window');
     if (!chatWindow) return;
 
     let displayTime = time || (!isLoadingSave ? getCurrentTime() : "");
-
     const isContinuation = (lastSender === sender && lastTime === displayTime && !text.startsWith("---"));
 
     // 1. 구분선 처리
@@ -91,7 +90,7 @@ function addMessage(text, sender, isLoadingSave = false, time = "", imageUrl = "
     if (sender !== 'me' && !isContinuation) {
         const profileImg = document.createElement('img');
         profileImg.className = 'chat-profile-img';
-        profileImg.src = currentProfileImg ? currentProfileImg.replace(/^\*/, "") : "data:image/gif;base64..."; 
+        profileImg.src = currentProfileImg ? currentProfileImg.replace(/^\*/, "") : "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
         wrapper.appendChild(profileImg);
     }
 
@@ -116,12 +115,13 @@ function addMessage(text, sender, isLoadingSave = false, time = "", imageUrl = "
         msgDiv.className = sender === 'me' ? 'my-message' : 'message-bubble';
         
         if (effect === 'horror') msgDiv.classList.add('horror-text');
-        if (effect === 'shake') msgDiv.classList.add('shake-text');
-        msgDiv.innerHTML = text.replace(/\\n/g, '<br>');
+        if (effect === 'shake') msgDiv.classList.add('shake-fade-text');
+        
         bubbleContainer.appendChild(msgDiv);
+        
         // ✨ 타자기 효과 적용 (L열에 'type'이라고 적거나 horror일 때 자동 적용)
         if (!isLoadingSave && (effect === 'type' || effect === 'horror')) {
-            await typeWriter(msgDiv, text, effect === 'horror' ? 150 : 50); // 공포는 더 천천히
+            await typeWriter(msgDiv, text, effect === 'horror' ? 120 : 40); // 공포는 더 천천히
         } else {
             msgDiv.innerHTML = text.replace(/\\n/g, '<br>');
         }
@@ -448,6 +448,7 @@ function clearAllSaves() {
 document.addEventListener('DOMContentLoaded', () => {
     loadCharacterList();
 });
+
 
 
 
