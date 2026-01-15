@@ -123,17 +123,14 @@ body {
 .message-bubble, .my-message {
     animation: message-appear 0.3s ease-out forwards;
     padding: 10px 14px;
-    border-radius: 18px;
+    border-radius: 18px; /* 기본은 모두 둥글게 시작 */
     font-size: 15px;
     line-height: 1.4;
     position: relative;
-    /* 핵심: 너비 및 줄바꿈 설정 */
-    max-width: 250px;       /* 말풍선의 최대 너비를 적절히 제한 */
-    width: fit-content;     /* 글자 길이에 딱 맞게 늘어남 */
-    word-break: break-all;  /* 너무 긴 단어는 자동으로 줄바꿈 */
-    white-space: pre-wrap;  /* 공백과 줄바꿈을 유지 */
-    
-    /* 그림자 살짝 추가해서 입체감 주기 (선택) */
+    max-width: 250px;
+    width: fit-content;
+    word-break: break-all;
+    white-space: pre-wrap;
     box-shadow: 0 1px 2px rgba(0,0,0,0.1);
 }
 .message-bubble { background: #e9e9eb; align-self: flex-start; border-bottom-left-radius: 4px; }
@@ -368,51 +365,49 @@ body {
     text-align: right;   /* 내 메시지 시간은 오른쪽 정렬 */
 }
 
-/* 기본 말풍선 꼬리 (예시: 왼쪽 꼬리) */
+/* 상대방 꼬리: 배경색 #e9e9eb와 일치시킴 */
 .message-bubble::before {
     content: '';
     position: absolute;
-    top: 5px;
-    left: -8px;
-    border-top: 8px solid transparent;
-    border-bottom: 8px solid transparent;
-    border-right: 10px solid #ffffff; /* 말풍선 색상과 동일하게 */
+    top: 0;
+    left: -6px;
+    border-top: 10px solid #e9e9eb; 
+    border-left: 10px solid transparent;
 }
 
-/* 내 말풍선 꼬리 (예시: 오른쪽 꼬리) */
+/* 내 꼬리: 배경색 #4da2ff(하늘색)와 일치시킴 */
 .my-message::after {
     content: '';
     position: absolute;
-    top: 5px;
-    right: -8px;
-    border-top: 8px solid transparent;
-    border-bottom: 8px solid transparent;
-    border-left: 10px solid #fee500; /* 카톡 노란색 등 */
+    top: 0;
+    right: -6px;
+    border-top: 10px solid #4da2ff; 
+    border-right: 10px solid transparent;
 }
 
-/* 이어진 메시지 간격 좁히기 */
+/* 이어진 메시지 공통: 간격 좁히기 */
 .message-wrapper.continuation {
-    margin-top: -10px; 
-    margin-bottom: 5px;
+    margin-top: -8px; 
+    margin-bottom: 2px;
 }
 
-/* 1. 이어지는 상대방 메시지: 꼬리 제거 및 모서리 둥글게 */
-.message-wrapper.continuation .message-bubble::before {
-    display: none; /* 꼬리 숨김 */
-}
+/* 1. 이어지는 상대방 메시지: 꼬리 제거 및 완전히 둥글게 */
 .message-wrapper.continuation .message-bubble {
-    border-top-left-radius: 15px !important; /* 꼬리가 있던 부분 둥글게 */
+    border-top-left-radius: 18px !important;
+}
+.message-wrapper.continuation .message-bubble::before {
+    display: none !important;
 }
 
-/* 2. 이어지는 내 메시지: 꼬리 제거 및 모서리 둥글게 */
-.message-wrapper.continuation.me .my-message::after {
-    display: none; /* 꼬리 숨김 */
-}
+/* 2. 이어지는 내 메시지: 꼬리 제거 및 완전히 둥글게 */
 .message-wrapper.continuation.me .my-message {
-    border-top-right-radius: 15px !important; /* 꼬리가 있던 부분 둥글게 */
+    border-top-right-radius: 18px !important;
+}
+.message-wrapper.continuation.me .my-message::after {
+    display: none !important;
 }
 
-/* 프로필 이미지 없는 칸 여백 맞추기 */
+/* 3. 프로필 이미지 공간 확보 (상대방) */
 .message-wrapper.continuation:not(.me) .bubble-container {
-    margin-left: 45px; /* 프로필 이미지 가로 너비 + 간격 */
+    margin-left: 48px; /* 프로필(40px) + 간격(8px) */
 }
