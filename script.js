@@ -116,7 +116,10 @@ async function addMessage(text, sender, isLoadingSave = false, time = "", imageU
         
         if (effect === 'horror') msgDiv.classList.add('horror-text');
         if (effect === 'shake') msgDiv.classList.add('shake-text');
-        
+        if (effect === 'glitch') {
+        msgDiv.classList.add('glitch-text');
+        msgDiv.setAttribute('data-text', text.replace(/\\n/g, ' '));
+    }
         bubbleContainer.appendChild(msgDiv);
         
         // ✨ 타자기 효과 적용 (L열에 'type'이라고 적거나 horror일 때 자동 적용)
@@ -448,6 +451,7 @@ function clearAllSaves() {
 document.addEventListener('DOMContentLoaded', () => {
     loadCharacterList();
 });
+
 
 
 
