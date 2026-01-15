@@ -438,3 +438,48 @@ body {
 .message-bubble, .my-message {
     margin-bottom: 2px; /* 말풍선 자체의 하단 여백을 살짝 줘서 가독성 확보 */
 }
+
+/* 1. 공포 효과: 붉은 글씨 + 흐려짐 */
+.horror-text {
+    color: #ff0000 !important;
+    text-shadow: 0 0 8px rgba(255, 0, 0, 0.6);
+    font-weight: 900;
+}
+
+/* 2. 진동 효과: 말풍선이 미친듯이 떨림 */
+.shake-text {
+    animation: shakeAnim 0.1s infinite;
+}
+
+@keyframes shakeAnim {
+    0% { transform: translate(1px, 1px); }
+    50% { transform: translate(-1px, -1px); }
+    100% { transform: translate(1px, -1px); }
+}
+
+/* 3. 화면 번쩍임: 화이트 아웃 또는 레드 아웃 */
+.flash-effect {
+    animation: flashAnim 0.4s ease-out;
+}
+
+@keyframes flashAnim {
+    0% { filter: brightness(3) contrast(1.5); background: white; }
+    100% { filter: brightness(1) contrast(1); background: transparent; }
+}
+
+/* 4. 시스템 메시지: 말풍선 형태를 완전히 벗어남 */
+.system-wrapper {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin: 20px 0;
+}
+.system-msg {
+    background: rgba(0, 0, 0, 0.05) !important;
+    color: #666 !important;
+    border: none !important;
+    font-size: 12px;
+    padding: 5px 15px;
+    border-radius: 4px;
+    box-shadow: none !important;
+}
