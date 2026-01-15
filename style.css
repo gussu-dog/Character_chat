@@ -55,20 +55,23 @@ body {
     background: none;
     border: none;
     color: white;
-    font-size: 20px;
+    font-size: 24px;      /* 화살표 크기를 살짝 키움 */
+    font-weight: bold;
     cursor: pointer;
     
-    /* 여기서부터 수정/추가 */
-    padding: 10px 20px;     /* 상하 10px, 좌우 20px로 여백을 넉넉히 줌 */
-    display: flex;          /* 아이콘과 텍스트가 있다면 정렬 유지 */
-    align-items: center;    /* 중앙 정렬 */
+    /* 누르기 편하게 영역 확장 */
+    padding: 10px 25px;   /* 상하 10px, 좌우 25px로 옆으로 길게 만듦 */
+    display: flex;
+    align-items: center;
     justify-content: center;
-    min-width: 60px;        /* 최소 가로 길이를 보장 */
-    transition: opacity 0.2s; /* 누를 때 피드백 효과 */
+    
+    /* 주변 요소와 간격 */
+    margin-right: 10px;
 }
 
 #back-btn:active {
-    opacity: 0.5;           /* 버튼을 누르는 순간 살짝 투명하게 해서 눌렸음을 알림 */
+    background-color: rgba(255, 255, 255, 0.1); /* 살짝 밝아짐 */
+    border-radius: 8px;
 }
 
 /* 이름 텍스트 */
