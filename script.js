@@ -7,6 +7,8 @@ let historyData = [];
 let currentCharName = "";
 let currentGid = ""; 
 let currentProfileImg = "";
+let lastSender = "";
+let lastTime = "";
 
 function getCurrentTime() {
     const now = new Date();
@@ -29,8 +31,11 @@ function addMessage(text, sender, isLoadingSave = false, time = "", imageUrl = "
 
     let displayTime = time || (!isLoadingSave ? getCurrentTime() : "");
 
+    const isContinuation = (lastSender === sender && lastTime === displayTime && !text.startsWith("---"));
+
     // 1. 구분선 처리
     if (text.trim().startsWith("---")) {
+        lastSender = "";
         let dividerText = text.replace("---", "").trim();
         if (dividerText === "") {
             const now = new Date();
@@ -55,12 +60,13 @@ function addMessage(text, sender, isLoadingSave = false, time = "", imageUrl = "
     if (!text && !imageUrl) return;
 
     const wrapper = document.createElement('div');
-    wrapper.className = sender === 'me' ? 'message-wrapper me' : 'message-wrapper';
+    // 연속된 메시지면 'continuation' 클래스 추가 (간격 조절용)
+    wrapper.className = `message-wrapper ${sender === 'me' ? 'me' : ''} ${isContinuation ? 'continuation' : ''}`;
     
-    if (sender !== 'me') {
+    if (sender !== 'me' && !isContinuation) {
         const profileImg = document.createElement('img');
         profileImg.className = 'chat-profile-img';
-        profileImg.src = currentProfileImg ? currentProfileImg.replace(/^\*/, "") : "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"; 
+        profileImg.src = currentProfileImg ? currentProfileImg.replace(/^\*/, "") : "data:image/gif;base64..."; 
         wrapper.appendChild(profileImg);
     }
 
@@ -87,13 +93,19 @@ function addMessage(text, sender, isLoadingSave = false, time = "", imageUrl = "
         bubbleContainer.appendChild(msgDiv);
     }
 
-    const timeSpan = document.createElement('span');
-    timeSpan.className = 'message-time';
-    timeSpan.innerText = displayTime;
-    bubbleContainer.appendChild(timeSpan);
+    if (!isContinuation) {
+        const timeSpan = document.createElement('span');
+        timeSpan.className = 'message-time';
+        timeSpan.innerText = displayTime;
+        bubbleContainer.appendChild(timeSpan);
+    }
 
     wrapper.appendChild(bubbleContainer);
     chatWindow.appendChild(wrapper);
+
+    // 현재 정보를 마지막 정보로 업데이트
+    lastSender = sender;
+    lastTime = displayTime;
 
     setTimeout(() => { chatWindow.scrollTop = chatWindow.scrollHeight; }, 10);
 
@@ -106,6 +118,8 @@ function addMessage(text, sender, isLoadingSave = false, time = "", imageUrl = "
 
 // 5. 대화 시작
 function startChat(name, gid, photo) {
+    lastSender = ""; // 초기화
+    lastTime = "";   // 초기화
     currentCharName = name;
     currentGid = gid;
     currentProfileImg = photo;
@@ -354,6 +368,7 @@ function clearAllSaves() {
 document.addEventListener('DOMContentLoaded', () => {
     loadCharacterList();
 });
+
 
 
 
