@@ -452,23 +452,29 @@ body {
     border-right-color: #1a0000 !important; /* 배경색과 동일하게 */
 }
 
-/* 진동 효과 (감쇄 버전) 클래스명 확인 */
+/* 1. 바들바들 고주파 진동 효과 */
 .shake-text {
-    display: inline-block; /* 애니메이션이 잘 먹도록 설정 */
-    animation: shivering 0.8s cubic-bezier(.36,.07,.19,.97) both;
-    transform: translate3d(0, 0, 0);
-    backface-visibility: hidden;
-    perspective: 1000px;
+    display: inline-block;
+    /* 매우 짧은 시간에(0.1s) 반복 실행하여 잘게 떠는 효과를 줍니다 */
+    animation: shivering-fast 0.1s infinite; 
+    /* 0.8초 뒤에 애니메이션을 멈추게 설정 (JS와 연동하거나 아래 애니메이션으로 대체) */
 }
 
-@keyframes shivering {
-    10%, 90% { transform: translate3d(-2px, 0, 0); }
-    20%, 80% { transform: translate3d(4px, 0, 0); }
-    30%, 50%, 70% { transform: translate3d(-6px, 0, 0); }
-    40%, 60% { transform: translate3d(6px, 0, 0); }
-    /* 후반부로 갈수록 수치가 줄어들며 잦아듭니다 */
-    85% { transform: translate3d(1px, 0, 0); }
-    100% { transform: translate3d(0, 0, 0); }
+/* 2. 시간이 지날수록 멈추는 진동 (최종 적용 버전) */
+.shake-text {
+    display: inline-block;
+    animation: intense-shiver 0.8s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+@keyframes intense-shiver {
+    0%, 100% { transform: translate(0, 0); }
+    10%, 30%, 50%, 70%, 90% { transform: translate(-1.5px, -1.5px); }
+    20%, 40%, 60%, 80% { transform: translate(1.5px, 1.5px); }
+    15%, 35%, 55%, 75% { transform: translate(1.5px, -1.5px); }
+    25%, 45%, 65%, 85% { transform: translate(-1.5px, 1.5px); }
+    /* 후반부로 갈수록 범위를 0.5px 단위로 줄여서 잦아들게 함 */
+    92% { transform: translate(0.5px, 0.5px); }
+    95% { transform: translate(-0.5px, -0.5px); }
 }
 
 /* 3. Type: 타자기 효과 시 커서 깜빡임 (선택 사항) */
