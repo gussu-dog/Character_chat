@@ -9,6 +9,7 @@ let currentGid = "";
 let currentProfileImg = "";
 let lastSender = "";
 let lastTime = "";
+let typingTimeout = null; // 실행 대기 중인 타이팅/메시지 출력을 담을 변수
 
 function getCurrentTime() {
     const now = new Date();
@@ -264,7 +265,10 @@ async function playScene(sceneId) {
     if ((scene.text || scene.imageUrl) && !isDivider) {
         const typing = showTyping();
         const randomDelay = Math.floor(Math.random() * 1000) + 800;
-        setTimeout(() => {
+
+        if (typingTimeout) clearTimeout(typingTimeout);
+        
+        typingTimeout = setTimeout(() => {
             if(typing && typing.parentNode) typing.parentNode.removeChild(typing);
             let displayImg = scene.imageUrl || "";
             displayImg = displayImg.trim();
@@ -273,6 +277,7 @@ async function playScene(sceneId) {
     }
             addMessage(scene.text || "", 'bot', false, scene.time, displayImg);
             showOptions(sceneId);
+            typingTimeout = null;
         }, randomDelay);
     } else {
         let displayImg = getCleanImg(scene.imageUrl, sceneId);
@@ -362,6 +367,17 @@ function getGachaResult(chanceString, defaultNext) {
 const backBtn = document.getElementById('back-btn');
 if(backBtn) {
     backBtn.onclick = () => {
+        // ✨ 1. 현재 예약된 채팅 출력 취소
+        if (typingTimeout) {
+            clearTimeout(typingTimeout);
+            typingTimeout = null;
+        }
+
+        // ✨ 2. 화면에 떠있는 '입력 중...' 말풍선 강제 삭제
+        const typingIndicator = document.getElementById('typing-indicator');
+        if (typingIndicator) {
+            typingIndicator.remove();
+        }
         document.getElementById('game-page').style.display = 'none';
         document.getElementById('list-page').style.display = 'flex';
         currentCharName = "";
@@ -383,6 +399,7 @@ function clearAllSaves() {
 document.addEventListener('DOMContentLoaded', () => {
     loadCharacterList();
 });
+
 
 
 
