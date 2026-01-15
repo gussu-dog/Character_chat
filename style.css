@@ -390,7 +390,11 @@ body {
     border-left: 10px solid #fee500; /* 카톡 노란색 등 */
 }
 
-/* ✨ [핵심] 이어지는 메시지 처리 ✨ */
+/* 이어진 메시지 간격 좁히기 */
+.message-wrapper.continuation {
+    margin-top: -10px; 
+    margin-bottom: 5px;
+}
 
 /* 1. 이어지는 상대방 메시지: 꼬리 제거 및 모서리 둥글게 */
 .message-wrapper.continuation .message-bubble::before {
@@ -408,7 +412,7 @@ body {
     border-top-right-radius: 15px !important; /* 꼬리가 있던 부분 둥글게 */
 }
 
-/* 3. 간격 세밀 조정 */
-.message-wrapper.continuation {
-    margin-top: -12px; /* 위 메시지와 더 밀착 */
+/* 프로필 이미지 없는 칸 여백 맞추기 */
+.message-wrapper.continuation:not(.me) .bubble-container {
+    margin-left: 45px; /* 프로필 이미지 가로 너비 + 간격 */
 }
