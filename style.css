@@ -51,24 +51,28 @@ body {
 }
 
 /* 뒤로가기 버튼(화살표) 세부 조정 */
-.back-btn {
-    background: none;
-    border: none;
-    color: #4da2ff;
-    font-size: 24px;      /* 화살표 크기를 살짝 키움 */
+#back-btn {
+    background: none !important; /* 배경 투명 강제 */
+    border: none !important;
+    color: #4da2ff !important;    /* 눈에 잘 띄는 하늘색 */
+    font-size: 28px;             /* 크기를 조금 더 키움 */
     font-weight: bold;
     cursor: pointer;
     
     /* 누르기 편하게 영역 확장 */
-    padding: 10px 25px;   /* 상하 10px, 좌우 25px로 옆으로 길게 만듦 */
+    padding: 10px 30px;          /* 좌우를 30px로 더 늘림 */
     display: flex;
     align-items: center;
     justify-content: center;
+
+    /* 혹시 다른 요소에 가려져 있다면 위로 올림 */
+    position: relative;
+    z-index: 999;
 }
 
 #back-btn:active {
-    background-color: rgba(0, 0, 0, 0.05); 
-    border-radius: 50%; 
+    background-color: rgba(77, 162, 255, 0.2); /* 클릭 시 하늘색 잔상 */
+    border-radius: 8px; 
 }
 
 /* 이름 텍스트 */
