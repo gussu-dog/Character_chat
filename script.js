@@ -73,7 +73,7 @@ function addMessage(text, sender, isLoadingSave = false, time = "", imageUrl = "
         // 주소가 '*'로 시작하면 이미지를 아예 생성하지 않음 (깨짐 방지)
         if (cleanImgUrl !== "" && !cleanImgUrl.startsWith('*')) {
         const imgElement = document.createElement('img');
-        imgElement.src = imageUrl;
+        imgElement.src = cleanImgUrl;
         imgElement.className = 'chat-image';
         bubbleContainer.appendChild(imgElement);
     }
@@ -224,6 +224,14 @@ async function playScene(sceneId) {
 
     const isDivider = scene.text && scene.text.trim().startsWith("---");
 
+    // 공통 이미지 가공 함수
+    const getCleanImg = (url, id) => {
+        if (!url) return "";
+        let trimmed = url.trim();
+        if (trimmed.startsWith('*') || id === "1") return "";
+        return trimmed;
+    };
+
     if ((scene.text || scene.imageUrl) && !isDivider) {
         const typing = showTyping();
         const randomDelay = Math.floor(Math.random() * 1000) + 800;
@@ -238,7 +246,8 @@ async function playScene(sceneId) {
             showOptions(sceneId);
         }, randomDelay);
     } else {
-        addMessage(scene.text || "", 'bot', false, scene.time, scene.imageUrl || "");
+        let displayImg = getCleanImg(scene.imageUrl, sceneId);
+        addMessage(scene.text || "", 'bot', false, scene.time, displayImg);
         showOptions(sceneId);
     }
 }
@@ -270,10 +279,7 @@ function showOptions(sceneId) {
                 nextId = getGachaResult(scene.chanceNext, scene.autoNext);
             }
             
-            if (nextId) {
-                // 0.8초 딜레이를 주어 자연스러운 채팅 흐름 연출
-                setTimeout(() => playScene(nextId), 800);
-            }
+            if (nextId) setTimeout(() => playScene(nextId), 800);
         }
         return;
     }
@@ -348,6 +354,7 @@ function clearAllSaves() {
 document.addEventListener('DOMContentLoaded', () => {
     loadCharacterList();
 });
+
 
 
 
