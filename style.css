@@ -133,10 +133,13 @@ body {
     white-space: pre-wrap;
     box-shadow: 0 1px 2px rgba(0,0,0,0.1);
 }
-.message-bubble { 
-    background: #e9e9eb; 
-    align-self: flex-start; 
-    border-radius: 18px; /* !important나 하단 각지기 제거 */
+.message-bubble {
+    position: relative;
+    background-color: #f2f2f2;
+    border-radius: 12px;
+    padding: 8px 12px;
+    max-width: 200px;
+    word-wrap: break-word;
 }
 .my-message { 
     background: #4da2ff; 
@@ -376,13 +379,16 @@ body {
 
 /* 상대방 꼬리: 배경색 #e9e9eb와 일치시킴 */
 .message-bubble::before {
-    content: '';
+    content: "";
     position: absolute;
-    top: 10px;    /* 위에서 약간 내려와야 자연스럽습니다 */
-    left: -7px;   /* 왼쪽으로 살짝 밀기 */
+    left: -6px; /* 꼬리 위치 */
+    top: 10px;
+    width: 0 !important;  /* 가로 너비가 늘어나지 않게 고정 */
+    height: 0 !important; /* 세로 높이가 늘어나지 않게 고정 */
     border-top: 6px solid transparent;
     border-bottom: 6px solid transparent;
-    border-right: 10px solid #e9e9eb; /* 말풍선 색상과 일치 */
+    border-right: 8px solid #f2f2f2; /* 꼬리 색상 */
+    display: block;
 }
 
 /* 내 꼬리: 배경색 #4da2ff(하늘색)와 일치시킴 */
@@ -449,7 +455,7 @@ body {
 }
 
 .message-bubble.horror-text::before {
-    border-right-color: #1a0000 !important; /* 배경색과 동일하게 */
+    border-right-color: #333333 !important; /* 배경색과 동일하게 */
 }
 
 /* 1. 5초 동안 초고속 진동 유지 */
@@ -482,6 +488,7 @@ body {
 
 /* 2. 순간적으로 지지직거리는 애니메이션 */
 .glitch-text {
+    display: inline-block; /* 텍스트 영역만 애니메이션 적용 */
     animation: glitch-flash 0.4s steps(2, start) infinite;
 }
 
@@ -515,4 +522,5 @@ body {
     );
     pointer-events: none;
     opacity: 0.3;
+    display: none;
 }
