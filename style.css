@@ -398,8 +398,8 @@ body {
 
 /* 이어진 메시지 공통: 간격 좁히기 */
 .message-wrapper.continuation {
-    margin-top: -8px; 
-    margin-bottom: 2px;
+    margin-top: -20px !important;
+    margin-bottom: 2px !important;
 }
 
 /* 1. 이어지는 상대방 메시지: 꼬리 제거 및 완전히 둥글게 */
@@ -421,4 +421,8 @@ body {
 /* 3. 프로필 이미지 공간 확보 (상대방) */
 .message-wrapper.continuation:not(.me) .bubble-container {
     margin-left: 48px; /* 프로필(40px) + 간격(8px) */
+}
+
+.message-wrapper + .message-wrapper.continuation {
+    margin-top: -18px !important;
 }
