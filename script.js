@@ -92,12 +92,21 @@ function addMessage(text, sender, isLoadingSave = false, time = "", imageUrl = "
         bubbleContainer.appendChild(msgDiv);
     }
 
-    if (!isContinuation) {
-        const timeSpan = document.createElement('span');
-        timeSpan.className = 'message-time';
-        timeSpan.innerText = displayTime;
-        bubbleContainer.appendChild(timeSpan);
+    const timeSpan = document.createElement('span');
+timeSpan.className = 'message-time';
+timeSpan.innerText = displayTime;
+bubbleContainer.appendChild(timeSpan);
+
+// [추가] 만약 지금 메시지가 '이어지는 메시지'라면?
+if (isContinuation) {
+    // 직전 메시지 wrapper를 찾아서 그 안의 시간을 숨깁니다.
+    const allWrappers = chatWindow.querySelectorAll('.message-wrapper');
+    if (allWrappers.length > 1) {
+        const lastWrapper = allWrappers[allWrappers.length - 2]; // 방금 추가한 것 바로 전
+        const lastTime = lastWrapper.querySelector('.message-time');
+        if (lastTime) lastTime.style.display = 'none'; // 이전 시간 숨기기
     }
+}
 
     wrapper.appendChild(bubbleContainer);
     chatWindow.appendChild(wrapper);
@@ -367,6 +376,7 @@ function clearAllSaves() {
 document.addEventListener('DOMContentLoaded', () => {
     loadCharacterList();
 });
+
 
 
 
