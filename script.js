@@ -204,7 +204,6 @@ function startChat(name, gid, photo) {
     if(optionsElement) optionsElement.innerHTML = '';
     
     loadStory(`${baseSheetUrl}${gid}`).then(async () => {
-        // ✨ [핵심] 색상을 먼저 결정합니다.
         const saved = localStorage.getItem(getSaveKey(name));
         let initialColor = "#4da2ff";
 
@@ -216,9 +215,7 @@ function startChat(name, gid, photo) {
             }
         }
 
-        // ✨ [핵심] 헤더 색상을 "딱 한 번만" 확실하게 세팅
         const header = document.querySelector('#game-page .chat-header');
-        const headerName = document.getElementById('header-name');
         const backBtn = document.getElementById('back-btn');
         if (header) {
             header.style.setProperty('background-color', initialColor, 'important');
@@ -237,6 +234,7 @@ function startChat(name, gid, photo) {
         }
 
         const saved = localStorage.getItem(getSaveKey(name));
+        
         if (saved) {
     const parsed = JSON.parse(saved);
     if (parsed.messages && parsed.messages.length > 0) {
