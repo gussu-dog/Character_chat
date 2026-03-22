@@ -468,7 +468,7 @@ function showOptions(sceneId) {
 
         const changeMatch = displayLabel.match(/\(([+-]\d+)\)/);
         if (changeMatch) {
-            affinityChange = parseInt(changeMatch[1]);
+            currentOptChange = parseInt(changeMatch[1]);
             displayLabel = displayLabel.replace(changeMatch[0], "").trim();
         }
         
