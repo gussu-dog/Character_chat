@@ -583,3 +583,15 @@ body {
     font-size: 16px;
     font-family: sans-serif; /* 깔끔한 폰트 */
 }
+
+/* 호감도 숫자가 튀는 효과 */
+@keyframes bounce-score {
+    0% { transform: scale(1); }
+    30% { transform: scale(1.3); color: #ffeb3b; } /* 살짝 커지면서 노란빛 */
+    100% { transform: scale(1); }
+}
+
+.bounce-effect {
+    display: inline-block; /* 크기 변화를 위해 필요 */
+    animation: bounce-score 0.5s ease-out;
+}
