@@ -452,11 +452,14 @@ function showOptions(sceneId) {
 
     // [2] 선택지 버튼 생성
     scene.options.forEach(opt => {
-        let displayLabel = opt.label;
+        let displayLabel = String(opt.label).trim();
         let requiredAffinity = 0;
 
-        const match = displayLabel.match(/^\[(\d+)\](.*)/);
+        console.log("검사 중인 텍스트:", displayLabel);
+
+        const match = displayLabel.trim().match(/^\[(\d+)\](.*)/);
         if (match) {
+            console.log("매칭 성공! 필요 호감도:", match[1]);
             requiredAffinity = parseInt(match[1]); // 대괄호 안의 숫자 추출
             displayLabel = match[2].trim();        // 대괄호 이후의 진짜 텍스트만 남김
 
