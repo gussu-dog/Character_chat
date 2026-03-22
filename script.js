@@ -7,7 +7,7 @@ let historyData = [];
 let currentCharName = "";
 let currentGid = ""; 
 let currentProfileImg = "";
-let currentAffinity = 15;
+let currentAffinity = 0;
 let lastSender = "";
 let lastTime = "";
 let typingTimeout = null; // 실행 대기 중인 타이팅/메시지 출력을 담을 변수
@@ -219,12 +219,13 @@ function startChat(name, gid, photo) {
         let parsedSave = null;
 
         if (savedRaw) {
-            parsedSave = JSON.parse(savedRaw);
-            if (parsedSave.messages && parsedSave.messages.length > 0) {
-                const lastMsg = parsedSave.messages[parsedSave.messages.length - 1];
-                initialColor = lastMsg.themeColor || initialColor;
-            }
+        const parsedSave = JSON.parse(savedRaw);
+        currentAffinity = (parsedSave.affinity !== undefined) ? parsedSave.affinity : 0;
+        } else {
+        currentAffinity = 0; // 새 게임은 0점부터!
         }
+
+        updateAffinityDisplay(0);
 
         // 헤더 색상 설정
         const header = document.querySelector('#game-page .chat-header');
@@ -376,6 +377,7 @@ async function playScene(sceneId) {
     if (currentCharName) {
         let saveData = JSON.parse(localStorage.getItem(getSaveKey(currentCharName))) || { messages: [], lastSceneId: "1" };
         saveData.lastSceneId = sceneId;
+        saveData.affinity = currentAffinity;
         localStorage.setItem(getSaveKey(currentCharName), JSON.stringify(saveData));
     }
 
