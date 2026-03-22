@@ -50,7 +50,7 @@ function typeWriter(element, text, speed = 50) {
 }
 
 // 3. 메시지 추가 및 저장 (중복 및 괄호 오류 수정됨)
-async function addMessage(text, sender, isLoadingSave = false, time = "", imageUrl = "", effect = "") {
+async function addMessage(text, sender, isLoadingSave = false, time = "", imageUrl = "", effect = "", themeColor = "") {
     const chatWindow = document.getElementById('chat-window');
     if (!chatWindow) return;
 
@@ -114,7 +114,6 @@ async function addMessage(text, sender, isLoadingSave = false, time = "", imageU
         const msgDiv = document.createElement('div');
         msgDiv.className = sender === 'me' ? 'my-message' : 'message-bubble';
 
-        // ✨ 핵심: 전달받은 themeColor가 있으면 바로 적용
         if (sender !== 'me' && themeColor && effect !== 'horror') { 
             msgDiv.style.backgroundColor = themeColor;
             msgDiv.style.color = 'white'; 
@@ -128,13 +127,12 @@ async function addMessage(text, sender, isLoadingSave = false, time = "", imageU
     }
         bubbleContainer.appendChild(msgDiv);
         
-        // ✨ 타자기 효과 적용 (L열에 'type'이라고 적거나 horror일 때 자동 적용)
+        // 타자기 효과 적용
         if (!isLoadingSave && (effect === 'type' || effect === 'horror')) {
             await typeWriter(msgDiv, text, effect === 'horror' ? 150 : 50);
         } else {
             msgDiv.innerHTML = text.replace(/\\n/g, '<br>');
         }
-        bubbleContainer.appendChild(msgDiv);
     }
 
     const timeSpan = document.createElement('span');
