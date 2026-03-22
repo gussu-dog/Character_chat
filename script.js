@@ -117,6 +117,7 @@ async function addMessage(text, sender, isLoadingSave = false, time = "", imageU
         if (sender !== 'me' && themeColor && effect !== 'horror') { 
             msgDiv.style.backgroundColor = themeColor;
             msgDiv.style.color = 'white'; 
+            msgDiv.style.setProperty('--theme-color', themeColor);
         }
 
         if (effect === 'horror') msgDiv.classList.add('horror-text');
@@ -193,8 +194,8 @@ function startChat(name, gid, photo) {
     const gamePage = document.getElementById('game-page');
     
     if(headerName) headerName.innerText = name;
-    if(listPage) listPage.style.display = 'none';
-    if(gamePage) gamePage.style.display = 'flex'; 
+    if(listPage) listPage.style.play = 'none';
+    if(gamePage) gamePage.style.play = 'flex'; 
     
     const chatWindow = document.getElementById('chat-window');
     chatWindow.innerHTML = '';
@@ -377,6 +378,12 @@ function showTyping() {
     const typingDiv = document.createElement('div');
     typingDiv.id = 'typing-indicator';
     typingDiv.className = 'message-bubble';
+
+    if (window.currentScene && window.currentScene.themeColor) {
+        typingDiv.style.setProperty('background-color', window.currentScene.themeColor, 'important');
+        typingDiv.style.setProperty('--theme-color', window.currentScene.themeColor);
+    }
+    
     typingDiv.innerHTML = '<div class="dot"></div><div class="dot"></div><div class="dot"></div>';
     chatWin.appendChild(typingDiv);
     chatWin.scrollTop = chatWin.scrollHeight;
