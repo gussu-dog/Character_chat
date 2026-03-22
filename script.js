@@ -238,42 +238,38 @@ async function loadStory(fullUrl) {
         const data = await response.text();
         const lines = data.split("\n").filter(l => l.trim() !== "");
         
-        lines.slice(1).forEach(line => {
+        lines.slice(1).forEach((line, index) => {
             const cols = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(c => c.trim().replace(/"/g, ""));
-            const themeColor = (cols[15] || "#4da2ff").trim(); // M열(인덱스 12)에서 색상 코드 읽기 (기본값 하늘색)
+            
+            // ✨ P열(15번) 데이터 청소 및 디버깅 로그
+            let rawColor = cols[15] ? cols[15].trim() : "";
+            // 정규식으로 #123456 형식만 추출 (눈에 안보이는 찌꺼기 제거)
+            let themeColor = rawColor.match(/#[0-9A-Fa-f]{6}/) ? rawColor.match(/#[0-9A-Fa-f]{6}/)[0] : "#4da2ff";
+
+            // 콘솔에서 ID별로 색상을 잘 읽는지 확인용 (F12 눌러서 확인 가능)
+            if (index < 5) console.log(`ID ${cols[0]}번 테마색:`, themeColor);
+
             const id = parseInt(cols[0]);
             if (!isNaN(id)) {
                 const timeValue = cols[10] || "";
                 const effectValue = (cols[11] || "").trim().toLowerCase();
                 const imageUrl = (cols[14] || "").trim();
+
                 if (id < 0) {
-                    // ✨ 과거 기록 데이터 저장
                     historyData.push({ 
-                        id: id, 
-                        text: cols[1], 
-                        sender: cols[2] === 'me' ? 'me' : 'bot', 
-                        time: timeValue, 
-                        imageUrl: imageUrl,
-                        effect: effectValue 
+                        id, text: cols[1], sender: cols[2] === 'me' ? 'me' : 'bot', 
+                        time: timeValue, imageUrl, effect: effectValue, themeColor: themeColor 
                     });
                 } else {
-                    const scene = { 
-                        text: cols[1], 
-                        options: [], 
-                        autoNext: cols[3], 
-                        time: timeValue, 
-                        effect: effectValue, 
-                        imageUrl: imageUrl, 
-                        triggerOpt: cols[12], 
-                        chanceNext: cols[13],
-                        themeColor: themeColor
+                    storyData[id.toString()] = { 
+                        text: cols[1], options: [], autoNext: cols[3], 
+                        time: timeValue, effect: effectValue, imageUrl, 
+                        triggerOpt: cols[12], chanceNext: cols[13], themeColor: themeColor 
                     };
+                    // 옵션 데이터 파싱 (기존과 동일)
                     for (let i = 4; i <= 9; i += 2) { 
-                        if (cols[i]) {
-                            scene.options.push({ index: ((i-4) / 2 + 1).toString(), label: cols[i], next: cols[i+1] }); 
-                        }
+                        if (cols[i]) storyData[id.toString()].options.push({ index: ((i-4)/2+1).toString(), label: cols[i], next: cols[i+1] }); 
                     }
-                    storyData[id.toString()] = scene;
                 }
             }
         });
