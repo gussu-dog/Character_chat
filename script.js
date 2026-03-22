@@ -204,17 +204,20 @@ function startChat(name, gid, photo) {
     if(optionsElement) optionsElement.innerHTML = '';
     
     loadStory(`${baseSheetUrl}${gid}`).then(async () => {
-        const saved = localStorage.getItem(getSaveKey(name));
+        // ✨ 변수 선언은 여기서 딱 한 번만!
+        const savedRaw = localStorage.getItem(getSaveKey(name));
         let initialColor = "#4da2ff";
+        let parsedSave = null;
 
-        if (saved) {
-            const parsed = JSON.parse(saved);
-            if (parsed.messages && parsed.messages.length > 0) {
-                const lastMsg = parsed.messages[parsed.messages.length - 1];
+        if (savedRaw) {
+            parsedSave = JSON.parse(savedRaw);
+            if (parsedSave.messages && parsedSave.messages.length > 0) {
+                const lastMsg = parsedSave.messages[parsedSave.messages.length - 1];
                 initialColor = lastMsg.themeColor || initialColor;
             }
         }
 
+        // 헤더 색상 설정
         const header = document.querySelector('#game-page .chat-header');
         const backBtn = document.getElementById('back-btn');
         if (header) {
@@ -224,7 +227,7 @@ function startChat(name, gid, photo) {
             if (backBtn) backBtn.style.setProperty('color', '#ffffff', 'important');
         }
 
-        
+        // 히스토리 메시지 로드
         if (historyData && historyData.length > 0) {
             for (const h of historyData) {
                 let hImg = h.imageUrl || "";
@@ -233,36 +236,19 @@ function startChat(name, gid, photo) {
             }
         }
 
-        const saved = localStorage.getItem(getSaveKey(name));
-        
-        if (saved) {
-    const parsed = JSON.parse(saved);
-    if (parsed.messages && parsed.messages.length > 0) {
-        const lastMsg = parsed.messages[parsed.messages.length - 1];
-        const lastColor = lastMsg.themeColor || "#f06292";
-        const header = document.querySelector('#game-page .chat-header');
-        
-        if (header) {
-            header.style.setProperty('background-color', lastColor, 'important');
-            header.style.setProperty('color', '#ffffff', 'important');
-        }
-
-        for (const m of parsed.messages) {
-            let mImg = m.imageUrl || "";
-            if (mImg.startsWith('*')) mImg = ""; 
-            await addMessage(m.text, m.sender, true, m.time, mImg, m.effect || "", m.themeColor || "");
-        }
-        
-        showOptions(parsed.lastSceneId);
-    } else {
-        if (storyData["1"]) playScene("1");
-    }
-} else {
+        // 세이브 데이터 복구
+        if (parsedSave) {
+            for (const m of parsedSave.messages) {
+                let mImg = m.imageUrl || "";
+                if (mImg.startsWith('*')) mImg = ""; 
+                await addMessage(m.text, m.sender, true, m.time, mImg, m.effect || "", m.themeColor || "");
+            }
+            showOptions(parsedSave.lastSceneId || "1");
+        } else {
             if (storyData["1"]) playScene("1");
         }
     }).catch(err => {
         console.error("스토리 로드 중 에러 발생:", err);
-        alert("데이터를 불러오는데 실패했습니다.");
     });
 }
 
