@@ -310,7 +310,7 @@ async function playScene(sceneId) {
     const scene = storyData[sceneId];
     if (!scene) return;
 
-    const header = document.querySelector('header'); // 헤더 선택
+    const header = document.querySelector('.chat-header'); // 헤더 선택
     if (header && scene.themeColor) {
         header.style.setProperty('background-color', scene.themeColor, 'important');
     }
