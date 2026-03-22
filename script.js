@@ -349,8 +349,15 @@ async function playScene(sceneId) {
     if (!scene) return;
 
     resetHeaderStyle();
-
     window.currentScene = scene;
+
+    let textToShow = scene.text || "";
+    const affinityMatch = textToShow.match(/\(([+-]\d+)\)/); // (+5) 또는 (-10) 찾기
+    if (affinityMatch) {
+        const amount = parseInt(affinityMatch[1]); // 숫자 추출
+        updateAffinityDisplay(amount); // 화면 점수 업데이트
+        textToShow = textToShow.replace(affinityMatch[0], "").trim(); // 텍스트에서 (+5) 제거
+    }
 
     const header = document.querySelector('#game-page .chat-header');
     const headerName = document.getElementById('header-name');
@@ -458,6 +465,11 @@ function showOptions(sceneId) {
         let displayLabel = String(opt.label).trim();
         let requiredAffinity = 0;
 
+        const changeMatch = displayLabel.match(/\(([+-]\d+)\)/);
+        if (changeMatch) {
+            affinityChange = parseInt(changeMatch[1]);
+            displayLabel = displayLabel.replace(changeMatch[0], "").trim();
+        
         const match = displayLabel.trim().match(/^\[(\d+)\](.*)/);
         if (match) {
             requiredAffinity = parseInt(match[1]);
