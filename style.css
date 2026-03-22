@@ -557,3 +557,13 @@ body {
     opacity: 0.3;
     display: none;
 }
+
+#affinity-container {
+    margin-left: auto; /* 오른쪽 구석으로 밀기 */
+    margin-right: 15px;
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+    color: #ff4d6d; /* 예쁜 하트 핑크색 */
+}
+#heart-icon { margin-right: 4px; }
