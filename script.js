@@ -567,8 +567,6 @@ function resetHeaderStyle() {
 
 
 function updateAffinityDisplay(amount) {
-    // 1. 전역 변수인 currentAffinity에 점수를 더합니다.
-    // 만약 amount가 0이면(초기 로딩 시) 점수는 유지됩니다.
     currentAffinity = (currentAffinity || 0) + amount;
     
     const scoreElement = document.getElementById('affinity-value');
@@ -583,6 +581,9 @@ function updateAffinityDisplay(amount) {
         } else if (amount < 0) {
             scoreElement.classList.add('bounce-minus');
         }
+        scoreElement.onanimationend = () => {
+            scoreElement.classList.remove('bounce-plus', 'bounce-minus');
+        };
     }
     
     // 3. 로컬 스토리지에 즉시 저장 (새로고침 대비)
