@@ -566,12 +566,26 @@ function resetHeaderStyle() {
 }
 
 function updateAffinityDisplay(amount) {
-    currentAffinity += amount; // 호감도 증가/감소
-    const display = document.getElementById('affinity-value');
-    if (display) {
-        display.innerText = currentAffinity; // 화면 숫자 업데이트
+    currentAffinity += amount;
+    
+    // 점수가 표시되는 요소를 찾습니다 (id가 'affinity-score'라고 가정)
+    const scoreElement = document.getElementById('affinity-score');
+    
+    if (scoreElement) {
+        scoreElement.innerText = currentAffinity;
+        
+        // ✨ 애니메이션 효과 넣기
+        scoreElement.classList.remove('bounce-effect'); // 기존 클래스 제거 (재실행을 위해)
+        void scoreElement.offsetWidth; // 브라우저 리플로우 강제 발생 (애니메이션 초기화 트리거)
+        scoreElement.classList.add('bounce-effect'); // 클래스 다시 추가
     }
-    console.log("현재 호감도:", currentAffinity);
+    
+    // 세이브 데이터에도 실시간 반영
+    if (currentCharName) {
+        let saveData = JSON.parse(localStorage.getItem(getSaveKey(currentCharName))) || { messages: [], lastSceneId: "1" };
+        saveData.affinity = currentAffinity;
+        localStorage.setItem(getSaveKey(currentCharName), JSON.stringify(saveData));
+    }
 }
 
 
