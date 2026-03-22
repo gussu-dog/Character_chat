@@ -7,6 +7,7 @@ let historyData = [];
 let currentCharName = "";
 let currentGid = ""; 
 let currentProfileImg = "";
+let currentAffinity = 0;
 let lastSender = "";
 let lastTime = "";
 let typingTimeout = null; // 실행 대기 중인 타이팅/메시지 출력을 담을 변수
@@ -451,11 +452,24 @@ function showOptions(sceneId) {
 
     // [2] 선택지 버튼 생성
     scene.options.forEach(opt => {
+        let displayLabel = opt.label;
+        let requiredAffinity = 0;
+
+        const match = displayLabel.match(/^\[(\d+)\](.*)/);
+        if (match) {
+            requiredAffinity = parseInt(match[1]); // 대괄호 안의 숫자 추출
+            displayLabel = match[2].trim();        // 대괄호 이후의 진짜 텍스트만 남김
+
+            // 만약 현재 호감도가 필요한 호감도보다 낮으면 버튼을 아예 만들지 않고 패스!
+            if (currentAffinity < requiredAffinity) {
+                return; 
+            }}
+        
         const button = document.createElement('button');
-        button.innerText = opt.label;
+        button.innerText = displayLabel;
         button.className = 'option-btn';
         button.onclick = () => {
-            addMessage(opt.label, 'me', false, "", "");
+            addMessage(displayLabel, 'me', false, "", "");
             optionsElement.innerHTML = '';
             setTimeout(() => {
                 let nextId = opt.next;
@@ -535,6 +549,15 @@ function resetHeaderStyle() {
     }
     if (headerName) headerName.style.color = ""; // 인라인 글자색 삭제
     if (backBtn) backBtn.style.color = "";      // 인라인 버튼색 삭제
+}
+
+function updateAffinityDisplay(amount) {
+    currentAffinity += amount; // 호감도 증가/감소
+    const display = document.getElementById('affinity-value');
+    if (display) {
+        display.innerText = currentAffinity; // 화면 숫자 업데이트
+    }
+    console.log("현재 호감도:", currentAffinity);
 }
 
 
