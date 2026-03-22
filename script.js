@@ -465,7 +465,6 @@ function showOptions(sceneId) {
         button.onclick = () => {
             addMessage(opt.label, 'me', false, "", "");
             optionsElement.innerHTML = '';
-            
             setTimeout(() => {
                 let nextId = opt.next;
 
@@ -474,12 +473,11 @@ function showOptions(sceneId) {
                     nextId = getGachaResult(scene.chanceNext, opt.next);
                 }
 
-                const nextScene = storyData[nextId];
-                if (!nextScene) return;
-
-                playScene(nextId);
-            }, 500); // 괄호 짝을 여기서 닫아야 합니다.
-        }; 
+                if (storyData[nextId]) {
+                    playScene(nextId);
+                }
+            }, 500);
+        }; // onclick 끝
         optionsElement.appendChild(button);
     });
 }
