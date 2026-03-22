@@ -575,11 +575,14 @@ function updateAffinityDisplay(amount) {
     
     if (scoreElement) {
         scoreElement.innerText = currentAffinity; // 화면 숫자 갱신
-        
-        // ✨ 애니메이션 리셋 및 실행 (통 튀는 효과)
-        scoreElement.classList.remove('bounce-effect');
-        void scoreElement.offsetWidth; // 브라우저에게 다시 그리라고 신호 주기
-        scoreElement.classList.add('bounce-effect');
+
+        scoreElement.classList.remove('bounce-plus', 'bounce-minus');
+        void scoreElement.offsetWidth;
+        if (amount > 0) {
+            scoreElement.classList.add('bounce-plus');
+        } else if (amount < 0) {
+            scoreElement.classList.add('bounce-minus');
+        }
     }
     
     // 3. 로컬 스토리지에 즉시 저장 (새로고침 대비)
