@@ -325,20 +325,20 @@ async function playScene(sceneId) {
 
     window.currentScene = scene;
 
-    const header = document.querySelector('#game-page .chat-header'); // 헤더 선택
+    const header = document.querySelector('#game-page .chat-header');
+    const headerName = document.getElementById('header-name');
+    const backBtn = document.getElementById('back-btn');
+    
     if (header && scene.themeColor) {
         header.style.setProperty('background-color', scene.themeColor, 'important');
         header.style.setProperty('border-bottom', 'none', 'important');
-        const headerName = document.getElementById('header-name');
-    if (headerName) {
-        headerName.style.setProperty('color', '#ffffff', 'important');
-    }
-    }
-
-    // 뒤로가기 버튼 색상도 테마에 맞춰 변경하고 싶다면
-    const backBtn = document.getElementById('back-btn');
-    if (backBtn) {
-        backBtn.style.setProperty('color', '#ffffff', 'important');
+        
+        if (headerName) {
+            headerName.style.setProperty('color', '#ffffff', 'important');
+        }
+        if (backBtn) {
+            backBtn.style.setProperty('color', '#ffffff', 'important');
+        }
     }
 
     if (scene.effect === 'flash') {
