@@ -219,7 +219,7 @@ function startChat(name, gid, photo) {
         let parsedSave = null;
 
         if (savedRaw) {
-        const parsedSave = JSON.parse(savedRaw);
+        parsedSave = JSON.parse(savedRaw);
         currentAffinity = (parsedSave.affinity !== undefined) ? parsedSave.affinity : 0;
         } else {
         currentAffinity = 0; // 새 게임은 0점부터!
