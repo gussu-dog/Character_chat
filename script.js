@@ -75,7 +75,16 @@ async function addMessage(text, sender, isLoadingSave = false, time = "", imageU
 
         if (!isLoadingSave && currentCharName) {
             let saveData = JSON.parse(localStorage.getItem(getSaveKey(currentCharName))) || { messages: [], lastSceneId: "1" };
-            saveData.messages.push({ text: `---${dividerText}`, sender: 'system', time: displayTime });
+            
+            saveData.messages.push({ 
+        text, 
+        sender, 
+        time: displayTime, 
+        imageUrl: imageUrl,
+        effect: effect, 
+        // 전달받은 themeColor가 있으면 넣고, 없으면 현재 장면(window.currentScene)의 색을 가져옵니다.
+        themeColor: themeColor || (window.currentScene ? window.currentScene.themeColor : "") 
+    });
             localStorage.setItem(getSaveKey(currentCharName), JSON.stringify(saveData));
         }
         setTimeout(() => { chatWindow.scrollTop = chatWindow.scrollHeight; }, 10);
@@ -204,7 +213,6 @@ function startChat(name, gid, photo) {
     if(optionsElement) optionsElement.innerHTML = '';
     
     loadStory(`${baseSheetUrl}${gid}`).then(async () => {
-        // ✨ 변수 선언은 여기서 딱 한 번만!
         const savedRaw = localStorage.getItem(getSaveKey(name));
         let initialColor = "#4da2ff";
         let parsedSave = null;
