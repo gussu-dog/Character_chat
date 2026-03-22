@@ -113,7 +113,16 @@ async function addMessage(text, sender, isLoadingSave = false, time = "", imageU
     if (text) {
         const msgDiv = document.createElement('div');
         msgDiv.className = sender === 'me' ? 'my-message' : 'message-bubble';
-        
+
+        if (sender !== 'me' && effect !== 'horror') { 
+        // horror 같은 특수 효과가 아닐 때만 색상 적용
+        const currentScene = storyData[lastSceneId]; // 현재 씬 정보를 가져오는 로직 필요
+        if (currentScene && currentScene.themeColor) {
+            msgDiv.style.backgroundColor = currentScene.themeColor;
+            msgDiv.style.color = 'white'; // 글자색은 가독성을 위해 흰색 고정
+        }
+    }
+
         if (effect === 'horror') msgDiv.classList.add('horror-text');
         if (effect === 'shake') msgDiv.classList.add('shake-text');
         if (effect === 'glitch') {
@@ -234,6 +243,7 @@ async function loadStory(fullUrl) {
         
         lines.slice(1).forEach(line => {
             const cols = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(c => c.trim().replace(/"/g, ""));
+            const themeColor = (cols[15] || "#4da2ff").trim(); // M열(인덱스 12)에서 색상 코드 읽기 (기본값 하늘색)
             const id = parseInt(cols[0]);
             if (!isNaN(id)) {
                 const timeValue = cols[10] || "";
@@ -258,7 +268,8 @@ async function loadStory(fullUrl) {
                         effect: effectValue, 
                         imageUrl: imageUrl, 
                         triggerOpt: cols[12], 
-                        chanceNext: cols[13] 
+                        chanceNext: cols[13],
+                        themeColor: themeColor
                     };
                     for (let i = 4; i <= 9; i += 2) { 
                         if (cols[i]) {
@@ -305,6 +316,18 @@ async function loadCharacterList() {
 async function playScene(sceneId) {
     const scene = storyData[sceneId];
     if (!scene) return;
+
+    const header = document.querySelector('header'); // 헤더 선택
+    if (header && scene.themeColor) {
+        header.style.backgroundColor = scene.themeColor;
+    }
+
+    // 뒤로가기 버튼 색상도 테마에 맞춰 변경하고 싶다면
+    const backBtn = document.getElementById('back-btn');
+    if (backBtn) {
+        // 배경이 밝으면 검정, 어두우면 흰색으로 하는 로직이 필요할 수 있음
+        backBtn.style.color = 'white'; 
+    }
 
     if (scene.effect === 'flash') {
         const frame = document.querySelector('.phone-frame');
