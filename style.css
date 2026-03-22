@@ -155,8 +155,8 @@ body {
     word-wrap: break-word;
 }
 .my-message { 
-    background: #f0f0f2 
-    color: #444446 
+    background: #f0f0f2;
+    color: #444446; 
     font-weight: 500 !important;
     align-self: flex-end; 
     border-radius: 18px; /* !important나 하단 각지기 제거 */
@@ -420,7 +420,7 @@ body {
     right: -7px;  /* 오른쪽으로 살짝 밀기 */
     border-top: 6px solid transparent;
     border-bottom: 6px solid transparent;
-    border-left: 10px solid #e9e9eb
+    border-left: 10px solid #f0f0f2
 }
 
 /* 이어진 메시지 공통: 간격 좁히기 */
