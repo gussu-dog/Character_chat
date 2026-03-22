@@ -183,8 +183,8 @@ wrapper.appendChild(bubbleContainer);
 
 // 5. 대화 시작
 function startChat(name, gid, photo) {
-    lastSender = ""; // 초기화
-    lastTime = "";   // 초기화
+    lastSender = ""; 
+    lastTime = "";   
     currentCharName = name;
     currentGid = gid;
     currentProfileImg = photo;
@@ -192,21 +192,22 @@ function startChat(name, gid, photo) {
     const headerName = document.getElementById('header-name');
     const listPage = document.getElementById('list-page');
     const gamePage = document.getElementById('game-page');
+    const chatWindow = document.getElementById('chat-window');
+    const optionsElement = document.getElementById('options');
     
     if(headerName) headerName.innerText = name;
     if(listPage) listPage.style.display = 'none';
-    if(gamePage) gamePage.style.display = 'flex'; 
+    if(gamePage) gamePage.style.display = 'flex';
     
-    const chatWindow = document.getElementById('chat-window');
-    chatWindow.innerHTML = '';
-    document.getElementById('options').innerHTML = '';
+    if(chatWindow) chatWindow.innerHTML = '';
+    if(optionsElement) optionsElement.innerHTML = '';
     
     loadStory(`${baseSheetUrl}${gid}`).then(async () => {
         if (historyData && historyData.length > 0) {
             for (const h of historyData) {
                 let hImg = h.imageUrl || "";
                 if (hImg.startsWith('*')) hImg = ""; 
-                await addMessage(h.text, h.sender, true, h.time, hImg, h.effect || "");
+                await addMessage(h.text, h.sender, true, h.time, hImg, h.effect || "", h.themeColor || "");
             }
         }
 
@@ -228,6 +229,7 @@ function startChat(name, gid, photo) {
         }
     }).catch(err => {
         console.error("스토리 로드 중 에러 발생:", err);
+        alert("데이터를 불러오는데 실패했습니다.");
     });
 }
 
