@@ -183,6 +183,7 @@ wrapper.appendChild(bubbleContainer);
 
 // 5. 대화 시작
 function startChat(name, gid, photo) {
+    resetHeaderStyle();
     lastSender = ""; 
     lastTime = "";   
     currentCharName = name;
@@ -322,6 +323,8 @@ async function loadCharacterList() {
 async function playScene(sceneId) {
     const scene = storyData[sceneId];
     if (!scene) return;
+
+    resetHeaderStyle();
 
     window.currentScene = scene;
 
@@ -509,7 +512,18 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
+function resetHeaderStyle() {
+    const header = document.querySelector('#game-page .chat-header');
+    const headerName = document.getElementById('header-name');
+    const backBtn = document.getElementById('back-btn');
 
+    if (header) {
+        header.style.backgroundColor = ""; // 인라인 배경 삭제
+        header.style.borderBottom = "";
+    }
+    if (headerName) headerName.style.color = ""; // 인라인 글자색 삭제
+    if (backBtn) backBtn.style.color = "";      // 인라인 버튼색 삭제
+}
 
 
 
