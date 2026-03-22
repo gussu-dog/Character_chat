@@ -328,6 +328,11 @@ async function playScene(sceneId) {
     const header = document.querySelector('#game-page .chat-header');
     const headerName = document.getElementById('header-name');
     const backBtn = document.getElementById('back-btn');
+
+    if (header) {
+        header.style.removeProperty('background-color');
+        header.style.removeProperty('color');
+    }
     
     if (header && scene.themeColor) {
         header.style.setProperty('background-color', scene.themeColor, 'important');
