@@ -155,11 +155,12 @@ body {
     word-wrap: break-word;
 }
 .my-message { 
-    background: #e9e9eb; 
-    color: #333; 
-    font-weight: 600 !important;
+    background: #f0f0f2 
+    color: #444446 
+    font-weight: 500 !important;
     align-self: flex-end; 
     border-radius: 18px; /* !important나 하단 각지기 제거 */
+    letter-spacing: -0.02em;
 }
 
 /* 8. 하단 옵션창 */
@@ -171,11 +172,13 @@ body {
     z-index: 20;
 }
 .option-btn {
-    background: #e9e9eb; color: #333; border: none; padding: 12px;
-    font-weight: 600;
+    background: #f0f0f2 color: #444446; border: none; padding: 12px;
+    font-weight: 500;
     border-radius: 20px; cursor: pointer; font-size: 14px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    letter-spacing: -0.02em;
     transition: background-color 0.2s;
+    opacity: 0.9;
 }
 
 .option-btn:active {
