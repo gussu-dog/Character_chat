@@ -469,6 +469,7 @@ function showOptions(sceneId) {
         if (changeMatch) {
             affinityChange = parseInt(changeMatch[1]);
             displayLabel = displayLabel.replace(changeMatch[0], "").trim();
+        }
         
         const match = displayLabel.trim().match(/^\[(\d+)\](.*)/);
         if (match) {
