@@ -46,28 +46,40 @@ body {
 
 /* 게임 페이지(채팅창) 헤더 - 화살표와 이름 사이 간격 부여 */
 #game-page .chat-header {
-    justify-content: flex-start;
-    gap: 15px; /* 화살표와 이름 사이의 거리를 15px 띄움 */
+    display: flex;
+    align-items: center; /* 세로 가운데 정렬 */
+    justify-content: flex-start; /* 왼쪽부터 정렬 */
+    padding: 0 15px; /* 헤더 자체에 좌우 여백 추가 */
+    position: relative;
+    /* 배경색 등 다른 설정은 유지 */
 }
 
 /* 뒤로가기 버튼(화살표) 세부 조정 */
 #back-btn {
-    background: none !important; /* 배경 투명 강제 */
-    border: none !important;
-    color: #4da2ff !important;    /* 눈에 잘 띄는 하늘색 */
-    font-size: 28px;             /* 크기를 조금 더 키움 */
-    font-weight: bold;
-    cursor: pointer;
-    
-    /* 누르기 편하게 영역 확장 */
-    padding: 10px 30px;          /* 좌우를 30px로 더 늘림 */
+    width: 30px;  /* 터치 영역 확보 */
+    height: 30px; /* 터치 영역 확보 */
     display: flex;
     align-items: center;
     justify-content: center;
+    cursor: pointer;
+    margin-right: 10px; /* 폰트 이름과의 간격 확대 */
+    /* text-indent나 기본 텍스트 색상 설정이 있다면 유지 */
+}
 
-    /* 혹시 다른 요소에 가려져 있다면 위로 올림 */
-    position: relative;
-    z-index: 999;
+/* 3. ✨ [핵심] 기존 꺾쇠 텍스트를 숨기고 CSS로 화살표 그리기 */
+.back-btn::before {
+    content: ''; /* 빈 콘텐츠 */
+    display: block;
+    width: 10px;  /* 화살표 크기 */
+    height: 10px; /* 화살표 크기 */
+    border-top: 2px solid #ffffff;  /* 상단 선 (흰색) */
+    border-left: 2px solid #ffffff; /* 좌측 선 (흰색) */
+    transform: rotate(-45deg); /* ✨ -45도 회전시켜서 90도 꺾인 모양 만듦 */
+}
+
+/* 4. [보완] 원래 있던 꺾쇠 텍스트('〈')는 투명하게 숨김 */
+#game-page .chat-header .back-btn {
+    color: transparent !important; /* 텍스트 숨김 */
 }
 
 #back-btn:active {
