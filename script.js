@@ -435,8 +435,7 @@ function showOptions(sceneId) {
 
                 if (nextScene && (nextScene.text || nextScene.imageUrl) && !isNextDivider) {
                             playScene(nextId);
-                    }, 1000);
-                } else {
+                    } else {
                     playScene(nextId);
                 }
             }, 500);
