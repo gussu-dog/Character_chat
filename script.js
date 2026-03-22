@@ -10,6 +10,7 @@ let currentProfileImg = "";
 let lastSender = "";
 let lastTime = "";
 let typingTimeout = null; // 실행 대기 중인 타이팅/메시지 출력을 담을 변수
+let currentChatSessionId = 0;
 
 function getCurrentTime() {
     const now = new Date();
@@ -183,6 +184,9 @@ wrapper.appendChild(bubbleContainer);
 
 // 5. 대화 시작
 function startChat(name, gid, photo) {
+    currentChatSessionId++; 
+    const thisSessionId = currentChatSessionId;
+
     resetHeaderStyle();
     lastSender = ""; 
     lastTime = "";   
@@ -204,7 +208,8 @@ function startChat(name, gid, photo) {
     if(optionsElement) optionsElement.innerHTML = '';
     
     loadStory(`${baseSheetUrl}${gid}`).then(async () => {
-        // ✨ 변수 선언은 여기서 딱 한 번만!
+        if (thisSessionId !== currentChatSessionId) return;
+        
         const savedRaw = localStorage.getItem(getSaveKey(name));
         let initialColor = "#4da2ff";
         let parsedSave = null;
@@ -230,11 +235,17 @@ function startChat(name, gid, photo) {
         // 히스토리 메시지 로드
         if (historyData && historyData.length > 0) {
             for (const h of historyData) {
+                if (thisSessionId !== currentChatSessionId) return;
                 let hImg = h.imageUrl || "";
                 if (hImg.startsWith('*')) hImg = ""; 
                 await addMessage(h.text, h.sender, true, h.time, hImg, h.effect || "", h.themeColor || "");
             }
-        }
+            if (parsedSave.lastSceneId) {
+                playScene(parsedSave.lastSceneId);
+            
+        }else {
+    if (storyData["1"]) playScene("1");
+}
 
         // 세이브 데이터 복구
         if (parsedSave) {
@@ -329,6 +340,7 @@ async function loadCharacterList() {
 }
 
 async function playScene(sceneId) {
+    const thisSessionId = currentChatSessionId;
     const scene = storyData[sceneId];
     if (!scene) return;
 
@@ -386,6 +398,8 @@ async function playScene(sceneId) {
         if (typingTimeout) clearTimeout(typingTimeout);
         
         typingTimeout = setTimeout(() => {
+            if (thisSessionId !== currentChatSessionId) return;
+            
             if(typing && typing.parentNode) typing.parentNode.removeChild(typing);
             let displayImg = scene.imageUrl || "";
             displayImg = displayImg.trim();
@@ -397,6 +411,7 @@ async function playScene(sceneId) {
             typingTimeout = null;
         }, randomDelay);
     } else {
+        if (thisSessionId !== currentChatSessionId) return;
         let displayImg = getCleanImg(scene.imageUrl, sceneId);
         addMessage(scene.text || "", 'bot', false, scene.time, displayImg, scene.effect, scene.themeColor);
         showOptions(sceneId);
