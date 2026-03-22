@@ -194,8 +194,8 @@ function startChat(name, gid, photo) {
     const gamePage = document.getElementById('game-page');
     
     if(headerName) headerName.innerText = name;
-    if(listPage) listPage.style.play = 'none';
-    if(gamePage) gamePage.style.play = 'flex'; 
+    if(listPage) listPage.style.display = 'none';
+    if(gamePage) gamePage.style.display = 'flex'; 
     
     const chatWindow = document.getElementById('chat-window');
     chatWindow.innerHTML = '';
@@ -310,6 +310,8 @@ async function loadCharacterList() {
 async function playScene(sceneId) {
     const scene = storyData[sceneId];
     if (!scene) return;
+
+    window.currentScene = scene;
 
     const header = document.querySelector('#game-page .chat-header'); // 헤더 선택
     if (header && scene.themeColor) {
