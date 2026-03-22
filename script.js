@@ -432,9 +432,6 @@ function showOptions(sceneId) {
                 const isNextDivider = nextScene && nextScene.text && nextScene.text.trim().startsWith("---");
 
                 if (nextScene && (nextScene.text || nextScene.imageUrl) && !isNextDivider) {
-                    const typing = showTyping();
-                    setTimeout(() => {
-                        if(typing && typing.parentNode) typing.parentNode.removeChild(typing);
                             playScene(nextId);
                     }, 1000);
                 } else {
