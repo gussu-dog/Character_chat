@@ -114,14 +114,11 @@ async function addMessage(text, sender, isLoadingSave = false, time = "", imageU
         const msgDiv = document.createElement('div');
         msgDiv.className = sender === 'me' ? 'my-message' : 'message-bubble';
 
-        if (sender !== 'me' && effect !== 'horror') { 
-        // horror 같은 특수 효과가 아닐 때만 색상 적용
-        const currentScene = storyData[lastSceneId]; // 현재 씬 정보를 가져오는 로직 필요
-        if (currentScene && currentScene.themeColor) {
-            msgDiv.style.backgroundColor = currentScene.themeColor;
-            msgDiv.style.color = 'white'; // 글자색은 가독성을 위해 흰색 고정
+        // ✨ 핵심: 전달받은 themeColor가 있으면 바로 적용
+        if (sender !== 'me' && themeColor && effect !== 'horror') { 
+            msgDiv.style.backgroundColor = themeColor;
+            msgDiv.style.color = 'white'; 
         }
-    }
 
         if (effect === 'horror') msgDiv.classList.add('horror-text');
         if (effect === 'shake') msgDiv.classList.add('shake-text');
@@ -137,6 +134,7 @@ async function addMessage(text, sender, isLoadingSave = false, time = "", imageU
         } else {
             msgDiv.innerHTML = text.replace(/\\n/g, '<br>');
         }
+        bubbleContainer.appendChild(msgDiv);
     }
 
     const timeSpan = document.createElement('span');
@@ -177,7 +175,8 @@ wrapper.appendChild(bubbleContainer);
         sender, 
         time: displayTime, 
         imageUrl: imageUrl,
-        effect: effect // 이 부분이 핵심!
+        effect: effect, 
+        themeColor
     });
         localStorage.setItem(getSaveKey(currentCharName), JSON.stringify(saveData));
     }
@@ -219,7 +218,7 @@ function startChat(name, gid, photo) {
                 for (const m of parsed.messages) {
                     let mImg = m.imageUrl || "";
                     if (mImg.startsWith('*')) mImg = ""; 
-                    await addMessage(m.text, m.sender, true, m.time, mImg, m.effect || "");
+                    await addMessage(m.text, m.sender, true, m.time, mImg, m.effect || "", m.themeColor || "");
                 }
                 showOptions(parsed.lastSceneId);
             } else {
@@ -364,13 +363,13 @@ async function playScene(sceneId) {
             if (displayImg.startsWith('*') || sceneId === "1") {
         displayImg = ""; 
     }
-            addMessage(scene.text || "", 'bot', false, scene.time, displayImg, scene.effect);
+            addMessage(scene.text || "", 'bot', false, scene.time, displayImg, scene.effect, scene.themeColor);
             showOptions(sceneId);
             typingTimeout = null;
         }, randomDelay);
     } else {
         let displayImg = getCleanImg(scene.imageUrl, sceneId);
-        addMessage(scene.text || "", 'bot', false, scene.time, displayImg, scene.effect);
+        addMessage(scene.text || "", 'bot', false, scene.time, displayImg, scene.effect, scene.themeColor);
         showOptions(sceneId);
     }
 }
