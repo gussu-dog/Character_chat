@@ -213,18 +213,28 @@ function startChat(name, gid, photo) {
 
         const saved = localStorage.getItem(getSaveKey(name));
         if (saved) {
-            const parsed = JSON.parse(saved);
-            if (parsed.messages && parsed.messages.length > 0) {
-                for (const m of parsed.messages) {
-                    let mImg = m.imageUrl || "";
-                    if (mImg.startsWith('*')) mImg = ""; 
-                    await addMessage(m.text, m.sender, true, m.time, mImg, m.effect || "", m.themeColor || "");
-                }
-                showOptions(parsed.lastSceneId);
-            } else {
-                if (storyData["1"]) playScene("1");
-            }
-        } else {
+    const parsed = JSON.parse(saved);
+    if (parsed.messages && parsed.messages.length > 0) {
+        const lastMsg = parsed.messages[parsed.messages.length - 1];
+        const lastColor = lastMsg.themeColor || "#f06292";
+        const header = document.querySelector('#game-page .chat-header');
+        
+        if (header) {
+            header.style.setProperty('background-color', lastColor, 'important');
+            header.style.setProperty('color', '#ffffff', 'important');
+        }
+
+        for (const m of parsed.messages) {
+            let mImg = m.imageUrl || "";
+            if (mImg.startsWith('*')) mImg = ""; 
+            await addMessage(m.text, m.sender, true, m.time, mImg, m.effect || "", m.themeColor || "");
+        }
+        
+        showOptions(parsed.lastSceneId);
+    } else {
+        if (storyData["1"]) playScene("1");
+    }
+} else {
             if (storyData["1"]) playScene("1");
         }
     }).catch(err => {
