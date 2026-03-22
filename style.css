@@ -584,11 +584,27 @@ body {
     font-family: sans-serif; /* 깔끔한 폰트 */
 }
 
-/* 호감도 숫자가 튀는 효과 */
+/* 기본 공통 애니메이션 */
 @keyframes bounce-score {
     0% { transform: scale(1); }
-    30% { transform: scale(1.3); color: #ffeb3b; } /* 살짝 커지면서 노란빛 */
+    30% { transform: scale(1.4); } /* 조금 더 크게 튀게 */
     100% { transform: scale(1); }
+}
+
+/* 플러스(노란색) */
+.bounce-plus {
+    display: inline-block;
+    animation: bounce-score 0.5s ease-out;
+    color: #ffeb3b !important; /* 노란색 */
+    text-shadow: 0 0 5px rgba(255, 235, 59, 0.5);
+}
+
+/* 마이너스(빨간색) */
+.bounce-minus {
+    display: inline-block;
+    animation: bounce-score 0.5s ease-out;
+    color: #ff5252 !important; /* 빨간색 */
+    text-shadow: 0 0 5px rgba(255, 82, 82, 0.5);
 }
 
 .bounce-effect {
