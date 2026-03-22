@@ -270,7 +270,7 @@ body {
 
 #chat-window::-webkit-scrollbar { width: 4px; }
 #chat-window::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 10px; }
-.dot { width: 5px; height: 5px; background: #8e8e93; border-radius: 50%; display: inline-block; animation: blink 1.4s infinite; margin: 0 2px; }
+.dot { width: 5px; height: 5px; background: #ffffff; border-radius: 50%; display: inline-block; animation: blink 1.4s infinite; margin: 0 2px; }
 @keyframes blink { 0%, 80%, 100% { opacity: 0.2; } 40% { opacity: 1; } }
 
 /* 시간 표시 스타일 */
