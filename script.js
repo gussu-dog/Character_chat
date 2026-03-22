@@ -316,14 +316,13 @@ async function playScene(sceneId) {
 
     const header = document.querySelector('header'); // 헤더 선택
     if (header && scene.themeColor) {
-        header.style.backgroundColor = scene.themeColor;
+        header.style.setProperty('background-color', scene.themeColor, 'important');
     }
 
     // 뒤로가기 버튼 색상도 테마에 맞춰 변경하고 싶다면
     const backBtn = document.getElementById('back-btn');
     if (backBtn) {
-        // 배경이 밝으면 검정, 어두우면 흰색으로 하는 로직이 필요할 수 있음
-        backBtn.style.color = 'white'; 
+        backBtn.style.setProperty('color', '#ffffff', 'important');
     }
 
     if (scene.effect === 'flash') {
