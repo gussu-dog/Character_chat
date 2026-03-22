@@ -571,8 +571,7 @@ function updateAffinityDisplay(amount) {
     // 만약 amount가 0이면(초기 로딩 시) 점수는 유지됩니다.
     currentAffinity = (currentAffinity || 0) + amount;
     
-    // 2. 화면의 숫자 요소를 찾습니다. (HTML에 id="affinity-score"가 있는지 꼭 확인!)
-    const scoreElement = document.getElementById('affinity-score');
+    const scoreElement = document.getElementById('affinity-value');
     
     if (scoreElement) {
         scoreElement.innerText = currentAffinity; // 화면 숫자 갱신
