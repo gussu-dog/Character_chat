@@ -1,7 +1,7 @@
 // 1. 설정 영역
 const appsScriptUrl = "https://script.google.com/macros/s/AKfycbzP0LhD-PiPMDsu4elQJj80FqCZ2C6MGeZchxKOx-FVREgtriWyLAAc6KI3XQ_JsPTOZQ/exec"; 
 const baseSheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQd7MAwHPNY8jyOF2Fi5qFgtwnDHjjA1IzkEbN91axz8qNHIDum5T2X-zH8yZ2kqdZQC4Lj1jMYD00R/pub?output=csv&gid=";
-const msgSound = new Audio('https://t1.daumcdn.net/kakaotalk/public/sound/talk.mp3');
+const msgSound = new Audio('https://noproblo.dayjo.net/idat/sfx/ding.mp3');
 msgSound.volume = 0.5;
 
 let storyData = {};
@@ -54,13 +54,13 @@ function typeWriter(element, text, speed = 50) {
 
 // 3. 메시지 추가 및 저장 (중복 및 괄호 오류 수정됨)
 async function addMessage(text, sender, isLoadingSave = false, time = "", imageUrl = "", effect = "", themeColor = "") {
-    const chatWindow = document.getElementById('chat-window');
-    if (!chatWindow) return;
-
     if (!isLoadingSave && sender === 'bot') {
         msgSound.currentTime = 0; // 연속으로 올 때를 대비해 재생 위치 초기화
         msgSound.play().catch(e => console.log("소리 재생 차단됨:", e));
     }
+    
+    const chatWindow = document.getElementById('chat-window');
+    if (!chatWindow) return;
 
     let displayTime = time || (!isLoadingSave ? getCurrentTime() : "");
     const isContinuation = (lastSender === sender && lastTime === displayTime && !text.startsWith("---"));
