@@ -50,7 +50,7 @@ function typeWriter(element, text, speed = 50) {
 }
 
 // 3. 메시지 추가 및 저장 (중복 및 괄호 오류 수정됨)
-async function addMessage(text, sender, isLoadingSave = false, time = "", imageUrl = "", effect = "", themeColor = "") {
+async function addMessage(text, sender, isLoadingSave = false, time = "", imageUrl = "", effect = "") {
     const chatWindow = document.getElementById('chat-window');
     if (!chatWindow) return;
 
@@ -113,12 +113,7 @@ async function addMessage(text, sender, isLoadingSave = false, time = "", imageU
     if (text) {
         const msgDiv = document.createElement('div');
         msgDiv.className = sender === 'me' ? 'my-message' : 'message-bubble';
-
-        if (sender !== 'me' && themeColor && effect !== 'horror') { 
-            msgDiv.style.backgroundColor = themeColor;
-            msgDiv.style.color = 'white'; 
-        }
-
+        
         if (effect === 'horror') msgDiv.classList.add('horror-text');
         if (effect === 'shake') msgDiv.classList.add('shake-text');
         if (effect === 'glitch') {
@@ -127,7 +122,7 @@ async function addMessage(text, sender, isLoadingSave = false, time = "", imageU
     }
         bubbleContainer.appendChild(msgDiv);
         
-        // 타자기 효과 적용
+        // ✨ 타자기 효과 적용 (L열에 'type'이라고 적거나 horror일 때 자동 적용)
         if (!isLoadingSave && (effect === 'type' || effect === 'horror')) {
             await typeWriter(msgDiv, text, effect === 'horror' ? 150 : 50);
         } else {
@@ -173,8 +168,7 @@ wrapper.appendChild(bubbleContainer);
         sender, 
         time: displayTime, 
         imageUrl: imageUrl,
-        effect: effect, 
-        themeColor
+        effect: effect // 이 부분이 핵심!
     });
         localStorage.setItem(getSaveKey(currentCharName), JSON.stringify(saveData));
     }
@@ -216,7 +210,7 @@ function startChat(name, gid, photo) {
                 for (const m of parsed.messages) {
                     let mImg = m.imageUrl || "";
                     if (mImg.startsWith('*')) mImg = ""; 
-                    await addMessage(m.text, m.sender, true, m.time, mImg, m.effect || "", m.themeColor || "");
+                    await addMessage(m.text, m.sender, true, m.time, mImg, m.effect || "");
                 }
                 showOptions(parsed.lastSceneId);
             } else {
@@ -238,38 +232,40 @@ async function loadStory(fullUrl) {
         const data = await response.text();
         const lines = data.split("\n").filter(l => l.trim() !== "");
         
-        lines.slice(1).forEach((line, index) => {
+        lines.slice(1).forEach(line => {
             const cols = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(c => c.trim().replace(/"/g, ""));
-            
-            // ✨ P열(15번) 데이터 청소 및 디버깅 로그
-            let rawColor = cols[15] ? cols[15].trim() : "";
-            // 정규식으로 #123456 형식만 추출 (눈에 안보이는 찌꺼기 제거)
-            let themeColor = rawColor.match(/#[0-9A-Fa-f]{6}/) ? rawColor.match(/#[0-9A-Fa-f]{6}/)[0] : "#4da2ff";
-
-            // 콘솔에서 ID별로 색상을 잘 읽는지 확인용 (F12 눌러서 확인 가능)
-            if (index < 5) console.log(`ID ${cols[0]}번 테마색:`, themeColor);
-
             const id = parseInt(cols[0]);
             if (!isNaN(id)) {
                 const timeValue = cols[10] || "";
                 const effectValue = (cols[11] || "").trim().toLowerCase();
                 const imageUrl = (cols[14] || "").trim();
-
                 if (id < 0) {
+                    // ✨ 과거 기록 데이터 저장
                     historyData.push({ 
-                        id, text: cols[1], sender: cols[2] === 'me' ? 'me' : 'bot', 
-                        time: timeValue, imageUrl, effect: effectValue, themeColor: themeColor 
+                        id: id, 
+                        text: cols[1], 
+                        sender: cols[2] === 'me' ? 'me' : 'bot', 
+                        time: timeValue, 
+                        imageUrl: imageUrl,
+                        effect: effectValue 
                     });
                 } else {
-                    storyData[id.toString()] = { 
-                        text: cols[1], options: [], autoNext: cols[3], 
-                        time: timeValue, effect: effectValue, imageUrl, 
-                        triggerOpt: cols[12], chanceNext: cols[13], themeColor: themeColor 
+                    const scene = { 
+                        text: cols[1], 
+                        options: [], 
+                        autoNext: cols[3], 
+                        time: timeValue, 
+                        effect: effectValue, 
+                        imageUrl: imageUrl, 
+                        triggerOpt: cols[12], 
+                        chanceNext: cols[13] 
                     };
-                    // 옵션 데이터 파싱 (기존과 동일)
                     for (let i = 4; i <= 9; i += 2) { 
-                        if (cols[i]) storyData[id.toString()].options.push({ index: ((i-4)/2+1).toString(), label: cols[i], next: cols[i+1] }); 
+                        if (cols[i]) {
+                            scene.options.push({ index: ((i-4) / 2 + 1).toString(), label: cols[i], next: cols[i+1] }); 
+                        }
                     }
+                    storyData[id.toString()] = scene;
                 }
             }
         });
@@ -310,17 +306,6 @@ async function playScene(sceneId) {
     const scene = storyData[sceneId];
     if (!scene) return;
 
-    const header = document.querySelector('header'); // 헤더 선택
-    if (header && scene.themeColor) {
-        header.style.setProperty('background-color', scene.themeColor, 'important');
-    }
-
-    // 뒤로가기 버튼 색상도 테마에 맞춰 변경하고 싶다면
-    const backBtn = document.getElementById('back-btn');
-    if (backBtn) {
-        backBtn.style.setProperty('color', '#ffffff', 'important');
-    }
-
     if (scene.effect === 'flash') {
         const frame = document.querySelector('.phone-frame');
         frame.classList.add('flash-effect');
@@ -356,13 +341,13 @@ async function playScene(sceneId) {
             if (displayImg.startsWith('*') || sceneId === "1") {
         displayImg = ""; 
     }
-            addMessage(scene.text || "", 'bot', false, scene.time, displayImg, scene.effect, scene.themeColor);
+            addMessage(scene.text || "", 'bot', false, scene.time, displayImg, scene.effect);
             showOptions(sceneId);
             typingTimeout = null;
         }, randomDelay);
     } else {
         let displayImg = getCleanImg(scene.imageUrl, sceneId);
-        addMessage(scene.text || "", 'bot', false, scene.time, displayImg, scene.effect, scene.themeColor);
+        addMessage(scene.text || "", 'bot', false, scene.time, displayImg, scene.effect);
         showOptions(sceneId);
     }
 }
@@ -480,7 +465,6 @@ function clearAllSaves() {
 document.addEventListener('DOMContentLoaded', () => {
     loadCharacterList();
 });
-
 
 
 
