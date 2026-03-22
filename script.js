@@ -1,7 +1,7 @@
 // 1. 설정 영역
 const appsScriptUrl = "https://script.google.com/macros/s/AKfycbzP0LhD-PiPMDsu4elQJj80FqCZ2C6MGeZchxKOx-FVREgtriWyLAAc6KI3XQ_JsPTOZQ/exec"; 
 const baseSheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQd7MAwHPNY8jyOF2Fi5qFgtwnDHjjA1IzkEbN91axz8qNHIDum5T2X-zH8yZ2kqdZQC4Lj1jMYD00R/pub?output=csv&gid=";
-const msgSound = new Audio('https://noproblo.dayjo.net/idat/sfx/ding.mp3');
+const msgSound = new Audio('https://notificationsounds.com/storage/sounds/file-sounds-1150-pristine.mp3');
 msgSound.volume = 0.5;
 
 let storyData = {};
