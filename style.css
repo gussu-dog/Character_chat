@@ -558,12 +558,28 @@ body {
     display: none;
 }
 
+/* 호감도 컨테이너: 오른쪽 끝에 깔끔하게 배치 */
 #affinity-container {
-    margin-left: auto; /* 오른쪽 구석으로 밀기 */
-    margin-right: 15px;
+    flex-shrink: 0;
     display: flex;
     align-items: center;
-    font-weight: bold;
-    color: #ff4d6d; /* 예쁜 하트 핑크색 */
+    margin-left: auto; /* 왼쪽의 이름(header-name)을 밀어내고 오른쪽 끝으로 */
+    padding-right: 5px; /* 화면 오른쪽 끝에서 살짝 띄움 */
 }
-#heart-icon { margin-right: 4px; }
+
+/* 하트 아이콘 설정 */
+#heart-icon {
+    color: #ffffff;    /* ❤️ 하트도 흰색으로! 만약 빨간색이 좋으시면 #ff4d6d 유지 */
+    font-size: 16px;
+    margin-right: 4px;
+    display: flex;
+    align-items: center;
+}
+
+/* 호감도 숫자 설정 */
+#affinity-value {
+    color: #ffffff;    /* 🔢 숫자도 흰색으로! */
+    font-weight: bold;
+    font-size: 16px;
+    font-family: sans-serif; /* 깔끔한 폰트 */
+}
