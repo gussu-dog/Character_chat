@@ -185,8 +185,9 @@ wrapper.appendChild(bubbleContainer);
         time: displayTime, 
         imageUrl: imageUrl,
         effect: effect, 
-        themeColor
+        themeColor: themeColor
     });
+        saveData.affinity = currentAffinity;
         localStorage.setItem(getSaveKey(currentCharName), JSON.stringify(saveData));
     }
 }
@@ -441,38 +442,27 @@ function showOptions(sceneId) {
     if(!optionsElement) return;
     optionsElement.innerHTML = '';
     
-    // [1] 선택지가 없는 장면 (자동 진행)
     if (!scene || !scene.options || scene.options.length === 0) {
         if (scene && (scene.autoNext || scene.chanceNext)) {
             let nextId = scene.autoNext;
-            
-            // 트리거가 '0'이면 사용자가 모르게 뒤에서 주사위를 굴림
             if (scene.triggerOpt === "0" && scene.chanceNext) {
                 nextId = getGachaResult(scene.chanceNext, scene.autoNext);
             }
-            
             if (nextId) setTimeout(() => playScene(nextId), 800);
         }
         return;
     }
 
-    // [2] 선택지 버튼 생성
     scene.options.forEach(opt => {
         let displayLabel = String(opt.label).trim();
         let requiredAffinity = 0;
 
-        console.log("검사 중인 텍스트:", displayLabel);
-
         const match = displayLabel.trim().match(/^\[(\d+)\](.*)/);
         if (match) {
-            console.log("매칭 성공! 필요 호감도:", match[1]);
-            requiredAffinity = parseInt(match[1]); // 대괄호 안의 숫자 추출
-            displayLabel = match[2].trim();        // 대괄호 이후의 진짜 텍스트만 남김
-
-            // 만약 현재 호감도가 필요한 호감도보다 낮으면 버튼을 아예 만들지 않고 패스!
-            if (currentAffinity < requiredAffinity) {
-                return; 
-            }}
+            requiredAffinity = parseInt(match[1]);
+            displayLabel = match[2].trim();
+            if (currentAffinity < requiredAffinity) return; 
+        }
         
         const button = document.createElement('button');
         button.innerText = displayLabel;
@@ -482,17 +472,14 @@ function showOptions(sceneId) {
             optionsElement.innerHTML = '';
             setTimeout(() => {
                 let nextId = opt.next;
-
-                // 선택지 기반 확률 트리거 체크
                 if (scene.triggerOpt === opt.index && scene.chanceNext) {
                     nextId = getGachaResult(scene.chanceNext, opt.next);
                 }
-
                 if (storyData[nextId]) {
                     playScene(nextId);
                 }
             }, 500);
-        }; // onclick 끝
+        }; 
         optionsElement.appendChild(button);
     });
 }
