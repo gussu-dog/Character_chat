@@ -225,6 +225,7 @@ function startChat(name, gid, photo) {
             if (parsedSave.messages && parsedSave.messages.length > 0) {
             const lastMsg = parsedSave.messages[parsedSave.messages.length - 1];
             if (lastMsg.themeColor) initialColor = lastMsg.themeColor;
+            }
         } else {
         currentAffinity = 0; // 새 게임은 0점부터!
         }
