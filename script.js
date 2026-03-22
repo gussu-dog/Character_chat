@@ -416,13 +416,13 @@ async function playScene(sceneId) {
             if (displayImg.startsWith('*') || sceneId === "1") {
         displayImg = ""; 
     }
-            addMessage(scene.text || "", 'bot', false, scene.time, displayImg, scene.effect, scene.themeColor);
+            addMessage(textToShow || "", 'bot', false, scene.time, displayImg, scene.effect, scene.themeColor);
             showOptions(sceneId);
             typingTimeout = null;
         }, randomDelay);
     } else {
         let displayImg = getCleanImg(scene.imageUrl, sceneId);
-        addMessage(scene.text || "", 'bot', false, scene.time, displayImg, scene.effect, scene.themeColor);
+        addMessage(textToShow || "", 'bot', false, scene.time, displayImg, scene.effect, scene.themeColor);
         showOptions(sceneId);
     }
 }
@@ -464,6 +464,7 @@ function showOptions(sceneId) {
     scene.options.forEach(opt => {
         let displayLabel = String(opt.label).trim();
         let requiredAffinity = 0;
+        let currentOptChange = 0;
 
         const changeMatch = displayLabel.match(/\(([+-]\d+)\)/);
         if (changeMatch) {
@@ -482,6 +483,9 @@ function showOptions(sceneId) {
         button.innerText = displayLabel;
         button.className = 'option-btn';
         button.onclick = () => {
+            if (currentOptChange !== 0) {
+                updateAffinityDisplay(currentOptChange);
+            }
             addMessage(displayLabel, 'me', false, "", "");
             optionsElement.innerHTML = '';
             setTimeout(() => {
