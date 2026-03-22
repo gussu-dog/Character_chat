@@ -442,7 +442,7 @@ function showOptions(sceneId) {
     if(!optionsElement) return;
     optionsElement.innerHTML = '';
     
-// [1] 선택지가 없는 장면 (자동 진행)
+    // [1] 선택지가 없는 장면 (자동 진행)
     if (!scene || !scene.options || scene.options.length === 0) {
         if (scene && (scene.autoNext || scene.chanceNext)) {
             let nextId = scene.autoNext;
@@ -456,6 +456,8 @@ function showOptions(sceneId) {
         }
         return;
     }
+
+    // [2] 선택지 버튼 생성
     scene.options.forEach(opt => {
         const button = document.createElement('button');
         button.innerText = opt.label;
@@ -463,25 +465,21 @@ function showOptions(sceneId) {
         button.onclick = () => {
             addMessage(opt.label, 'me', false, "", "");
             optionsElement.innerHTML = '';
+            
             setTimeout(() => {
                 let nextId = opt.next;
 
-                // 선택지 기반 확률 트리거 체크 (사용자가 누른 번호와 트리거 번호가 같을 때)
+                // 선택지 기반 확률 트리거 체크
                 if (scene.triggerOpt === opt.index && scene.chanceNext) {
                     nextId = getGachaResult(scene.chanceNext, opt.next);
                 }
 
                 const nextScene = storyData[nextId];
                 if (!nextScene) return;
-                const isNextDivider = nextScene && nextScene.text && nextScene.text.trim().startsWith("---");
 
-                if (nextScene && (nextScene.text || nextScene.imageUrl) && !isNextDivider) {
-                            playScene(nextId);
-                    } else {
-                    playScene(nextId);
-                }
-            }, 500);
-        };
+                playScene(nextId);
+            }, 500); // 괄호 짝을 여기서 닫아야 합니다.
+        }; 
         optionsElement.appendChild(button);
     });
 }
