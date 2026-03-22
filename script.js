@@ -344,7 +344,7 @@ async function loadCharacterList() {
 }
 
 async function playScene(sceneId) {
-    updateAffinityDisplay(0);
+    // updateAffinityDisplay(0);
     const scene = storyData[sceneId];
     if (!scene) return;
 
