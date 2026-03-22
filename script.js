@@ -313,6 +313,7 @@ async function playScene(sceneId) {
     const header = document.querySelector('#game-page .chat-header'); // 헤더 선택
     if (header && scene.themeColor) {
         header.style.setProperty('background-color', scene.themeColor, 'important');
+        console.log("헤더 색상 변경 시도:", scene.themeColor, header);
     }
 
     // 뒤로가기 버튼 색상도 테마에 맞춰 변경하고 싶다면
