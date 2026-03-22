@@ -301,7 +301,7 @@ async function loadCharacterList() {
         });
         if(spinner) spinner.style.display = 'none';
         if(listPage) {
-            listPage.style.setProperty('display', 'flex', 'important');
+            listPage.style.display = 'flex';
         }
     } catch (e) {
         console.error("캐릭터 목록 오류:", e);
