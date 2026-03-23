@@ -332,6 +332,7 @@ async function loadCharacterList() {
         const characters = await response.json();
         listDiv.innerHTML = '';
         characters.forEach(char => {
+            if (char.name.includes("미완성")) return;
             const item = document.createElement('div');
             item.className = 'character-item';
             let profilePic = char.photo ? char.photo.replace(/^\*/, "") : "";
